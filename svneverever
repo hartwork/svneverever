@@ -1,0 +1,95 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+# Copyright (C) 2010 Sebastian Pipping <sebastian@pipping.org>
+# Licensed under GPL v3 or later
+#
+import pysvn
+import sys
+
+VERSION = '1.0'
+USAGE = """
+  %prog  file://$PWD/repo"""
+
+
+def dump(t, level=0, branch_tag_level=-3):
+	def indent_print(text):
+		print '%s%s' % (' '*(4*level), text)
+
+	if branch_tag_level + 2 == level:
+		indent_print('[..]')
+		return
+
+	for k, v in sorted(t.items()):
+		if not k:
+			continue
+		indent_print('/%s' % k)
+		if k in ('branches', 'tags'):
+			btl = level
+		else:
+			btl = branch_tag_level
+		dump(v, level=level + 1, branch_tag_level=btl)
+
+
+def remove_leaves(t, level=0, branch_tag_level=-2):
+	for k in list(t.keys()):
+		if branch_tag_level + 1 == level:
+			continue
+		if not t[k]:
+			del t[k]
+			continue
+		if k in ('branches', 'tags'):
+			btl = level
+		else:
+			btl = branch_tag_level
+		remove_leaves(t[k], level=level + 1, branch_tag_level=btl)
+
+
+if __name__ == '__main__':
+	# Command line interface
+	from optparse import OptionParser
+	parser = OptionParser(usage=USAGE, version=VERSION)
+	(opts, args) = parser.parse_args()
+	if len(args) != 1:
+		parser.print_usage()
+		sys.exit(1)
+	REPO_URI = args[0]
+
+
+	# Build tree from repo
+	client = pysvn.Client()
+	tree = dict()
+	try:
+		latest_rivision = client.info2(REPO_URI, recurse=False)[0][1]['last_changed_rev'].number
+	except (pysvn.ClientError) as e:
+		sys.stderr.write('ERROR: %s\n' % str(e))
+		sys.exit(1)
+	prev_percent = 0
+
+	sys.stderr.write('Analyzing %d revisions' % latest_rivision)
+	for i in xrange(1, latest_rivision + 1):
+		# Indicate progress
+		sys.stderr.write('.')
+		sys.stderr.flush()
+		percent = i * 100 / latest_rivision
+		if (percent - prev_percent >= 5):
+			prev_percent = percent
+			text = '%d%% (r%d) ' % (percent, i + 1)
+			sys.stderr.write(text)
+
+		locations = [[f.path[1:] for f in e.changed_paths if f.action == 'A'] for e in client.log(REPO_URI,
+			revision_start=pysvn.Revision(pysvn.opt_revision_kind.number, i),
+			revision_end=pysvn.Revision(pysvn.opt_revision_kind.number, i),
+			discover_changed_paths=True)][0]
+		for d in locations:
+			a = tree
+			for i in d.split('/'):
+				if i not in a:
+					a[i] = dict()
+				a = a[i]
+
+	sys.stderr.write('\n')
+	sys.stderr.flush()
+
+	# NOTE: Leaves are files and empty directories
+	remove_leaves(tree)
+	dump(tree)
