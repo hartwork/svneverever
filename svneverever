@@ -30,18 +30,15 @@ def dump(t, level=0, branch_tag_level=-3):
 		dump(v, level=level + 1, branch_tag_level=btl)
 
 
-def remove_leaves(t, level=0, branch_tag_level=-2):
+def hide_branch_and_tag_content(t, level=0, branch_tag_level=-2):
 	for k in list(t.keys()):
 		if branch_tag_level + 1 == level:
-			continue
-		if not t[k]:
-			del t[k]
 			continue
 		if k in ('branches', 'tags'):
 			btl = level
 		else:
 			btl = branch_tag_level
-		remove_leaves(t[k], level=level + 1, branch_tag_level=btl)
+		hide_branch_and_tag_content(t[k], level=level + 1, branch_tag_level=btl)
 
 
 if __name__ == '__main__':
@@ -100,5 +97,5 @@ if __name__ == '__main__':
 	sys.stderr.flush()
 
 	# NOTE: Leaves are files and empty directories
-	remove_leaves(tree)
+	hide_branch_and_tag_content(tree)
 	dump(tree)
