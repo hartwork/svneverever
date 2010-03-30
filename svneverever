@@ -76,10 +76,19 @@ if __name__ == '__main__':
 			text = '%d%% (r%d) ' % (percent, i + 1)
 			sys.stderr.write(text)
 
-		locations = [[f.path[1:] for f in e.changed_paths if f.action == 'A'] for e in client.log(REPO_URI,
-			revision_start=pysvn.Revision(pysvn.opt_revision_kind.number, i),
-			revision_end=pysvn.Revision(pysvn.opt_revision_kind.number, i),
-			discover_changed_paths=True)][0]
+		summary = client.diff_summarize(
+			REPO_URI,
+			revision1=pysvn.Revision(pysvn.opt_revision_kind.number, i - 1),
+			url_or_path2=REPO_URI,
+			revision2=pysvn.Revision(pysvn.opt_revision_kind.number, i),
+			recurse=True,
+			ignore_ancestry=True)
+
+		def is_directory_addition(summary_entry):
+			return summary_entry.summarize_kind == pysvn.diff_summarize_kind.added \
+				and summary_entry.node_kind == pysvn.node_kind.dir
+
+		locations = [e.path for e in summary if is_directory_addition(e)]
 		for d in locations:
 			a = tree
 			for i in d.split('/'):
