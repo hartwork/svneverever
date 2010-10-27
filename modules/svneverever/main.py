@@ -7,7 +7,7 @@ import pysvn
 import sys
 
 USAGE = """
-  %prog  file://$PWD/repo"""
+  %prog  REPOSITORY"""
 
 
 def dump(t, level=0, branch_tag_level=-3):
@@ -40,6 +40,18 @@ def hide_branch_and_tag_content(t, level=0, branch_tag_level=-2):
 		hide_branch_and_tag_content(t[k], level=level + 1, branch_tag_level=btl)
 
 
+def ensure_uri(text):
+	import re
+	svn_uri_detector = re.compile('^[A-Za-z+]+://')
+	if svn_uri_detector.search(text):
+		return text
+	else:
+		import os
+		import urllib
+		abspath = os.path.abspath(text)
+		return 'file://%s' % urllib.quote(abspath)
+
+
 def main():
 	# Command line interface
 	from optparse import OptionParser
@@ -49,7 +61,7 @@ def main():
 	if len(args) != 1:
 		parser.print_usage()
 		sys.exit(1)
-	REPO_URI = args[0]
+	REPO_URI = ensure_uri(args[0])
 
 
 	# Build tree from repo
