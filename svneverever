@@ -9,7 +9,7 @@ def add_module_path():
     self_dir = os.path.dirname(inspect.getfile(sys._getframe(0)))
     if os.path.exists(os.path.join(self_dir, 'setup.py')):
         # Allow running from source dir
-        sys.path.append(os.path.join(self_dir, 'modules'))
+        sys.path.insert(0, os.path.join(self_dir, 'modules'))
 
 add_module_path()
 from svneverever.main import main

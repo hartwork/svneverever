@@ -5,7 +5,7 @@
 from distutils.core import setup
 
 import sys
-sys.path.append('modules')
+sys.path.insert(0, 'modules')
 from svneverever.version import VERSION_STR
 
 setup(
