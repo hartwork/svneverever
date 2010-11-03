@@ -3,6 +3,7 @@
 # Copyright (C) 2010 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GPL v3 or later
 #
+from __future__ import print_function
 import pysvn
 import sys
 
@@ -12,7 +13,7 @@ USAGE = """
 
 def dump(t, level=0, branch_tag_level=-3):
 	def indent_print(text):
-		print '%s%s' % (' '*(4*level), text)
+		print('%s%s' % (' '*(4*level), text))
 
 	if branch_tag_level + 2 == level:
 		indent_print('[..]')
