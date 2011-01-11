@@ -6,39 +6,44 @@
 from __future__ import print_function
 import pysvn
 import sys
+import math
 
 USAGE = """
   %prog  REPOSITORY"""
 
 
-def dump(t, level=0, branch_tag_level=-3):
-	def indent_print(text):
-		print('%s%s' % (' '*(4*level), text))
+def dump(t, revision_digits, level=0, branch_tag_level=-3):
+	def indent_print(line_start, text):
+		print(line_start, '%s%s' % (' '*(4*level), text))
 
 	if branch_tag_level + 2 == level:
 		indent_print('[..]')
 		return
 
-	for k, v in sorted(t.items()):
+	for k, (first_rev, last_rev, children) in sorted(t.items()):
 		if not k:
 			continue
-		indent_print('/%s' % k)
+
+		format = '[%%%dd; %%%dd]' % (revision_digits, revision_digits)
+		visual_rev = format % (first_rev, last_rev)
+
+		indent_print(visual_rev, ' /%s' % k)
 		if k in ('branches', 'tags'):
 			btl = level
 		else:
 			btl = branch_tag_level
-		dump(v, level=level + 1, branch_tag_level=btl)
+		dump(children, revision_digits, level=level + 1, branch_tag_level=btl)
 
 
 def hide_branch_and_tag_content(t, level=0, branch_tag_level=-2):
-	for k in list(t.keys()):
+	for k, (first_rev, last_rev, children) in list(t.items()):
 		if branch_tag_level + 1 == level:
 			continue
 		if k in ('branches', 'tags'):
 			btl = level
 		else:
 			btl = branch_tag_level
-		hide_branch_and_tag_content(t[k], level=level + 1, branch_tag_level=btl)
+		hide_branch_and_tag_content(children, level=level + 1, branch_tag_level=btl)
 
 
 def ensure_uri(text):
@@ -51,6 +56,13 @@ def ensure_uri(text):
 		import urllib
 		abspath = os.path.abspath(text)
 		return 'file://%s' % urllib.quote(abspath)
+
+
+def digit_count(n):
+	if n == 0:
+		return 1
+	assert(n > 0)
+	return int(math.floor(math.log10(n)) + 1)
 
 
 def main():
@@ -103,15 +115,19 @@ def main():
 			sub_tree = tree
 			for name in d.split('/'):
 				if name not in sub_tree:
-					sub_tree[name] = dict()
-				sub_tree = sub_tree[name]
+					first_rev, last_rev, children = rev, rev, dict()
+					sub_tree[name] = (first_rev, last_rev, children)
+				else:
+					first_rev, last_rev, children = sub_tree[name]
+					sub_tree[name] = (first_rev, last_rev + 1, children)
+				sub_tree = children
 
 	sys.stderr.write('\n\n')
 	sys.stderr.flush()
 
 	# NOTE: Leaves are files and empty directories
 	hide_branch_and_tag_content(tree)
-	dump(tree)
+	dump(tree, digit_count(latest_rivision))
 
 
 if __name__ == '__main__':
