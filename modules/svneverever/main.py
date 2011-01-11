@@ -76,21 +76,21 @@ def main():
 	prev_percent = 0
 
 	sys.stderr.write('Analyzing %d revisions...' % latest_rivision)
-	for i in xrange(1, latest_rivision + 1):
+	for rev in xrange(1, latest_rivision + 1):
 		# Indicate progress
 		sys.stderr.write('.')
 		sys.stderr.flush()
-		percent = i * 100 / latest_rivision
+		percent = rev * 100 / latest_rivision
 		if (percent - prev_percent >= 5):
 			prev_percent = percent
-			text = ' %d%% (r%d)%s' % (percent, i, (percent != 100) and '..' or '.')
+			text = ' %d%% (r%d)%s' % (percent, rev, (percent != 100) and '..' or '.')
 			sys.stderr.write(text)
 
 		summary = client.diff_summarize(
 			REPO_URI,
-			revision1=pysvn.Revision(pysvn.opt_revision_kind.number, i - 1),
+			revision1=pysvn.Revision(pysvn.opt_revision_kind.number, rev - 1),
 			url_or_path2=REPO_URI,
-			revision2=pysvn.Revision(pysvn.opt_revision_kind.number, i),
+			revision2=pysvn.Revision(pysvn.opt_revision_kind.number, rev),
 			recurse=True,
 			ignore_ancestry=True)
 
@@ -100,11 +100,11 @@ def main():
 
 		locations = [e.path for e in summary if is_directory_addition(e)]
 		for d in locations:
-			a = tree
-			for i in d.split('/'):
-				if i not in a:
-					a[i] = dict()
-				a = a[i]
+			sub_tree = tree
+			for name in d.split('/'):
+				if name not in sub_tree:
+					sub_tree[name] = dict()
+				sub_tree = sub_tree[name]
 
 	sys.stderr.write('\n\n')
 	sys.stderr.flush()
