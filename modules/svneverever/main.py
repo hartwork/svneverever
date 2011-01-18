@@ -12,7 +12,7 @@ USAGE = """
   %prog  REPOSITORY"""
 
 
-def dump(t, revision_digits, level=0, branch_tag_level=-3):
+def dump(t, revision_digits, latest_rivision, level=0, branch_tag_level=-3):
 	def indent_print(line_start, text):
 		print(line_start, '%s%s' % (' '*(4*level), text))
 
@@ -20,23 +20,27 @@ def dump(t, revision_digits, level=0, branch_tag_level=-3):
 		indent_print('[..]')
 		return
 
-	for k, (first_rev, last_rev, children) in sorted(t.items()):
+	for k, (added_on_rev, last_deleted_on_rev, children) in sorted(t.items()):
 		if not k:
 			continue
 
 		format = '[%%%dd; %%%dd]' % (revision_digits, revision_digits)
-		visual_rev = format % (first_rev, last_rev)
+		if last_deleted_on_rev is not None:
+			last_seen_rev = last_deleted_on_rev - 1
+		else:
+			last_seen_rev = latest_rivision
+		visual_rev = format % (added_on_rev, last_seen_rev)
 
 		indent_print(visual_rev, ' /%s' % k)
 		if k in ('branches', 'tags'):
 			btl = level
 		else:
 			btl = branch_tag_level
-		dump(children, revision_digits, level=level + 1, branch_tag_level=btl)
+		dump(children, revision_digits, latest_rivision, level=level + 1, branch_tag_level=btl)
 
 
 def hide_branch_and_tag_content(t, level=0, branch_tag_level=-2):
-	for k, (first_rev, last_rev, children) in list(t.items()):
+	for k, (added_on_rev, last_deleted_on_rev, children) in list(t.items()):
 		if branch_tag_level + 1 == level:
 			continue
 		if k in ('branches', 'tags'):
@@ -110,24 +114,45 @@ def main():
 			return summary_entry.summarize_kind == pysvn.diff_summarize_kind.added \
 				and summary_entry.node_kind == pysvn.node_kind.dir
 
-		locations = [e.path for e in summary if is_directory_addition(e)]
-		for d in locations:
+		def is_directory_deletion(summary_entry):
+			return summary_entry.summarize_kind == pysvn.diff_summarize_kind.delete \
+				and summary_entry.node_kind == pysvn.node_kind.dir
+
+		dirs_added = [e.path for e in summary if is_directory_addition(e)]
+		for d in dirs_added:
 			sub_tree = tree
 			for name in d.split('/'):
 				if name not in sub_tree:
-					first_rev, last_rev, children = rev, rev, dict()
-					sub_tree[name] = (first_rev, last_rev, children)
+					added_on_rev, last_deleted_on_rev, children = rev, None, dict()
+					sub_tree[name] = (added_on_rev, last_deleted_on_rev, children)
 				else:
-					first_rev, last_rev, children = sub_tree[name]
-					sub_tree[name] = (first_rev, last_rev + 1, children)
+					added_on_rev, last_deleted_on_rev, children = sub_tree[name]
 				sub_tree = children
+
+		def mark_deleted_recursively(sub_tree, name, rev):
+			added_on_rev, last_deleted_on_rev, children = sub_tree[name]
+			sub_tree[name] = (added_on_rev, rev, children)
+			for child_name in children.keys():
+				mark_deleted_recursively(children, child_name, rev)
+
+		dirs_deleted = [e.path for e in summary if is_directory_deletion(e)]
+		for d in dirs_deleted:
+			sub_tree = tree
+			comps = d.split('/')
+			comps_len = len(comps)
+			for i, name in enumerate(comps):
+				if i == comps_len - 1:
+					mark_deleted_recursively(sub_tree, name, rev)
+				else:
+					added_on_rev, last_deleted_on_rev, children = sub_tree[name]
+					sub_tree = children
 
 	sys.stderr.write('\n\n')
 	sys.stderr.flush()
 
 	# NOTE: Leaves are files and empty directories
 	hide_branch_and_tag_content(tree)
-	dump(tree, digit_count(latest_rivision))
+	dump(tree, digit_count(latest_rivision), latest_rivision)
 
 
 if __name__ == '__main__':
