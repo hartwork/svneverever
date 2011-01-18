@@ -152,13 +152,17 @@ def main():
 	start_time = time.time()
 	sys.stderr.write('Analyzing %d revisions...\n' % latest_revision)
 	width = get_terminal_width()
-	for rev in xrange(1, latest_revision + 1):
-		# Indicate progress
+	
+	def indicate_progress(rev):
 		percent = rev * 100.0 / latest_revision
 		seconds_taken = time.time() - start_time
 		seconds_expected = seconds_taken / float(rev) * latest_revision
 		sys.stderr.write('\r' + make_progress_bar(percent, width, seconds_taken, seconds_expected))
 		sys.stderr.flush()
+	
+	for rev in xrange(1, latest_revision + 1):
+		if rev == 1:
+			indicate_progress(rev)
 
 		summary = client.diff_summarize(
 			REPO_URI,
@@ -204,6 +208,8 @@ def main():
 				else:
 					added_on_rev, last_deleted_on_rev, children = sub_tree[name]
 					sub_tree = children
+
+		indicate_progress(rev)
 
 	sys.stderr.write('\n\n')
 	sys.stderr.flush()
