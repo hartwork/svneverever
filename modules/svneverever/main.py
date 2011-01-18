@@ -106,8 +106,6 @@ def digit_count(n):
 
 def hms(seconds):
 	h = int(seconds / 3600)
-	if h > 99:
-		h = 99
 	seconds = seconds - h*3600
 	m = int(seconds / 60)
 	seconds = seconds - m*60
@@ -124,6 +122,8 @@ def make_progress_bar(percent, width, seconds_taken, seconds_expected):
 	open_len = bar_content_len - fill_len
 	seconds_remaining = seconds_expected - seconds_taken
 	hr, mr, sr = hms(seconds_remaining)
+	if hr > 99:
+		hr = 99
 	return '%6.2f%%  (%02d:%02d:%02d remaining)  [%s%s]' % (percent, hr, mr, sr, '#'*fill_len, ' '*open_len)
 
 def main():
