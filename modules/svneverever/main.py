@@ -12,7 +12,7 @@ USAGE = """
   %prog  REPOSITORY"""
 
 
-def dump(t, revision_digits, latest_rivision, level=0, branch_tag_level=-3):
+def dump(t, revision_digits, latest_revision, level=0, branch_tag_level=-3):
 	def indent_print(line_start, text):
 		print(line_start, '%s%s' % (' '*(4*level), text))
 
@@ -28,7 +28,7 @@ def dump(t, revision_digits, latest_rivision, level=0, branch_tag_level=-3):
 		if last_deleted_on_rev is not None:
 			last_seen_rev = last_deleted_on_rev - 1
 		else:
-			last_seen_rev = latest_rivision
+			last_seen_rev = latest_revision
 		visual_rev = format % (added_on_rev, last_seen_rev)
 
 		indent_print(visual_rev, ' /%s' % k)
@@ -36,7 +36,7 @@ def dump(t, revision_digits, latest_rivision, level=0, branch_tag_level=-3):
 			btl = level
 		else:
 			btl = branch_tag_level
-		dump(children, revision_digits, latest_rivision, level=level + 1, branch_tag_level=btl)
+		dump(children, revision_digits, latest_revision, level=level + 1, branch_tag_level=btl)
 
 
 def hide_branch_and_tag_content(t, level=0, branch_tag_level=-2):
@@ -85,18 +85,18 @@ def main():
 	client = pysvn.Client()
 	tree = dict()
 	try:
-		latest_rivision = client.info2(REPO_URI, recurse=False)[0][1]['last_changed_rev'].number
+		latest_revision = client.info2(REPO_URI, recurse=False)[0][1]['last_changed_rev'].number
 	except (pysvn.ClientError) as e:
 		sys.stderr.write('ERROR: %s\n' % str(e))
 		sys.exit(1)
 	prev_percent = 0
 
-	sys.stderr.write('Analyzing %d revisions...' % latest_rivision)
-	for rev in xrange(1, latest_rivision + 1):
+	sys.stderr.write('Analyzing %d revisions...' % latest_revision)
+	for rev in xrange(1, latest_revision + 1):
 		# Indicate progress
 		sys.stderr.write('.')
 		sys.stderr.flush()
-		percent = rev * 100 / latest_rivision
+		percent = rev * 100 / latest_revision
 		if (percent - prev_percent >= 5):
 			prev_percent = percent
 			text = ' %d%% (r%d)%s' % (percent, rev, (percent != 100) and '..' or '.')
@@ -152,7 +152,7 @@ def main():
 
 	# NOTE: Leaves are files and empty directories
 	hide_branch_and_tag_content(tree)
-	dump(tree, digit_count(latest_rivision), latest_rivision)
+	dump(tree, digit_count(latest_revision), latest_revision)
 
 
 if __name__ == '__main__':
