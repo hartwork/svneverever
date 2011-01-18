@@ -52,7 +52,8 @@ def dump(t, revision_digits, latest_revision, level=0, branch_tag_level=-3):
 		print(line_start, '%s%s' % (' '*(4*level), text))
 
 	if branch_tag_level + 2 == level:
-		indent_print('[..]')
+		line_start = ' '*(1 + revision_digits + 2 + revision_digits + 1)
+		indent_print(line_start, ' [..]')
 		return
 
 	for k, (added_on_rev, last_deleted_on_rev, children) in sorted(t.items()):
