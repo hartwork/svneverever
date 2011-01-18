@@ -8,6 +8,7 @@ import pysvn
 import sys
 import math
 import os
+import time
 import fcntl
 import termios
 import struct
@@ -103,14 +104,27 @@ def digit_count(n):
 	return int(math.floor(math.log10(n)) + 1)
 
 
-def make_progress_bar(percent, width):
-	other_len = 9
+def hms(seconds):
+	h = int(seconds / 3600)
+	if h > 99:
+		h = 99
+	seconds = seconds - h*3600
+	m = int(seconds / 60)
+	seconds = seconds - m*60
+	s = int(seconds)
+	return h, m, s
+
+
+def make_progress_bar(percent, width, seconds_taken, seconds_expected):
+	other_len = (6 + 1) + 2 + (1 + 8 + 1 + 9 + 1) + 3 + 1
 	assert(width > 0)
-	bar_content_len = width - 1 - other_len
+	bar_content_len = width - other_len
 	assert(bar_content_len >= 0)
 	fill_len = int(percent * bar_content_len / 100)
 	open_len = bar_content_len - fill_len
-	return '%6.2f%% [%s%s]' % (percent, '#'*fill_len, ' '*open_len)
+	seconds_remaining = seconds_expected - seconds_taken
+	hr, mr, sr = hms(seconds_remaining)
+	return '%6.2f%%  (%02d:%02d:%02d remaining)  [%s%s]' % (percent, hr, mr, sr, '#'*fill_len, ' '*open_len)
 
 def main():
 	# Command line interface
@@ -134,12 +148,15 @@ def main():
 		sys.exit(1)
 	prev_percent = 0
 
+	start_time = time.time()
 	sys.stderr.write('Analyzing %d revisions...\n' % latest_revision)
 	width = get_terminal_width()
 	for rev in xrange(1, latest_revision + 1):
 		# Indicate progress
 		percent = rev * 100.0 / latest_revision
-		sys.stderr.write('\r' + make_progress_bar(percent, width))
+		seconds_taken = time.time() - start_time
+		seconds_expected = seconds_taken / float(rev) * latest_revision
+		sys.stderr.write('\r' + make_progress_bar(percent, width, seconds_taken, seconds_expected))
 		sys.stderr.flush()
 
 		summary = client.diff_summarize(
