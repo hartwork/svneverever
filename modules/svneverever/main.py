@@ -7,9 +7,43 @@ from __future__ import print_function
 import pysvn
 import sys
 import math
+import os
+import fcntl
+import termios
+import struct
 
 USAGE = """
   %prog  REPOSITORY"""
+
+
+def get_terminal_width():
+	try:
+		return int(os.environ['COLUMNS'])
+	except:
+		pass
+
+	def query_fd(fd):
+		rows, cols, ph, pw = struct.unpack('HHHH', (fcntl.ioctl(fd, termios.TIOCGWINSZ, struct.pack('HHHH', 0, 0, 0, 0))))
+		return cols
+
+	for fd in (0, 1, 2):
+		try:
+			return query_fd(fd)
+		except:
+			pass
+
+	try:
+		fd = os.open(os.ctermid(), os.O_RDONLY)
+		try:
+			return query_fd(fd)
+		except:
+			pass
+		finally:
+			os.close(fd)
+	except:
+		pass
+
+	return 80
 
 
 def dump(t, revision_digits, latest_revision, level=0, branch_tag_level=-3):
@@ -69,6 +103,15 @@ def digit_count(n):
 	return int(math.floor(math.log10(n)) + 1)
 
 
+def make_progress_bar(percent, width):
+	other_len = 9
+	assert(width > 0)
+	bar_content_len = width - 1 - other_len
+	assert(bar_content_len >= 0)
+	fill_len = int(percent * bar_content_len / 100)
+	open_len = bar_content_len - fill_len
+	return '%6.2f%% [%s%s]' % (percent, '#'*fill_len, ' '*open_len)
+
 def main():
 	# Command line interface
 	from optparse import OptionParser
@@ -91,16 +134,13 @@ def main():
 		sys.exit(1)
 	prev_percent = 0
 
-	sys.stderr.write('Analyzing %d revisions...' % latest_revision)
+	sys.stderr.write('Analyzing %d revisions...\n' % latest_revision)
+	width = get_terminal_width()
 	for rev in xrange(1, latest_revision + 1):
 		# Indicate progress
-		sys.stderr.write('.')
+		percent = rev * 100.0 / latest_revision
+		sys.stderr.write('\r' + make_progress_bar(percent, width))
 		sys.stderr.flush()
-		percent = rev * 100 / latest_revision
-		if (percent - prev_percent >= 5):
-			prev_percent = percent
-			text = ' %d%% (r%d)%s' % (percent, rev, (percent != 100) and '..' or '.')
-			sys.stderr.write(text)
 
 		summary = client.diff_summarize(
 			REPO_URI,
