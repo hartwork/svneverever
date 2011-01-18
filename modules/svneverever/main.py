@@ -106,12 +106,12 @@ def digit_count(n):
 
 
 def hms(seconds):
+	seconds = math.ceil(seconds)
 	h = int(seconds / 3600)
 	seconds = seconds - h*3600
 	m = int(seconds / 60)
 	seconds = seconds - m*60
-	s = int(seconds)
-	return h, m, s
+	return h, m, seconds
 
 
 def make_progress_bar(percent, width, seconds_taken, seconds_expected):
