@@ -166,6 +166,10 @@ def command_line():
 		dest='show_numbers', action='store_false', default=True,
 		help='Hide numbers, e.g. revision ranges (default: disabled)')
 	parser.add_argument(
+		'--no-progress',
+		dest='show_progress', action='store_false', default=True,
+		help='Hide progress bar (default: disabled)')
+	parser.add_argument(
 		'--depth',
 		dest='max_depth', metavar='DEPTH', action='store', type=int, default=-1,
 		help='Maximum depth to print (starting at 1)')
@@ -213,7 +217,7 @@ def main():
 	nick_stats = dict()
 	
 	for rev in xrange(1, latest_revision + 1):
-		if rev == 1:
+		if rev == 1 and args.show_progress:
 			indicate_progress(rev, before_work=True)
 
 		if args.authors_mode:
@@ -227,7 +231,8 @@ def main():
 
 			nick_stats[author_name] = (first_commit_rev, last_commit_rev, commit_count)
 
-			indicate_progress(rev)
+			if args.show_progress:
+				indicate_progress(rev)
 			continue
 
 		summary = client.diff_summarize(
@@ -275,9 +280,13 @@ def main():
 					added_on_rev, last_deleted_on_rev, children = sub_tree[name]
 					sub_tree = children
 
-		indicate_progress(rev)
+		if args.show_progress:
+			indicate_progress(rev)
 
-	sys.stderr.write('\n\n')
+	if args.show_progress:
+		sys.stderr.write('\n\n')
+	else:
+		sys.stderr.write('\n')
 	sys.stderr.flush()
 
 	# NOTE: Leaves are files and empty directories
