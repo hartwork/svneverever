@@ -51,7 +51,7 @@ def get_terminal_width():
 	return 80
 
 
-def dump(t, revision_digits, latest_revision, config, level=0, branch_level=-3, tag_level=-3):
+def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level=-3, tag_level=-3):
 	def indent_print(line_start, text):
 		if config.show_range:
 			print('%s  %s%s' % (line_start, ' '*(4*level), text))
@@ -85,7 +85,17 @@ def dump(t, revision_digits, latest_revision, config, level=0, branch_level=-3, 
 		elif k == 'tags':
 			tl = level
 
-		dump(children, revision_digits, latest_revision, config, level=level + 1, branch_level=bl, tag_level=tl)
+		dump_tree(children, revision_digits, latest_revision, config, level=level + 1, branch_level=bl, tag_level=tl)
+
+
+def dump_nick_stats(nick_stats, revision_digits, config):
+	if config.show_range:
+		format = "%%%dd [%%%dd; %%%dd]  %%s" % (revision_digits, revision_digits, revision_digits)
+		for nick, (first_commit_rev, last_commit_rev, commit_count) in sorted(nick_stats.items()):
+			print(format % (commit_count, first_commit_rev, last_commit_rev, nick))
+	else:
+		for nick, (first_commit_rev, last_commit_rev, commit_count) in sorted(nick_stats.items()):
+			print(nick)
 
 
 def ensure_uri(text):
@@ -159,6 +169,10 @@ def command_line():
 		'--depth',
 		dest='max_depth', metavar='DEPTH', action='store', type=int, default=-1,
 		help='Maximum depth to print (starting at 1)')
+	parser.add_argument(
+		'--authors',
+		dest='authors_mode', action='store_true', default=False,
+		help='Collect author names instead of path information (default: disabled)')
 
 	args = parser.parse_args()
 
@@ -192,10 +206,26 @@ def main():
 		seconds_expected = seconds_taken / float(rev) * latest_revision
 		sys.stderr.write('\r' + make_progress_bar(percent, width, seconds_taken, seconds_expected))
 		sys.stderr.flush()
+
+	nick_stats = dict()
 	
 	for rev in xrange(1, latest_revision + 1):
 		if rev == 1:
 			indicate_progress(rev)
+
+		if args.authors_mode:
+			author_name = client.revpropget('svn:author', args.repo_uri, pysvn.Revision(pysvn.opt_revision_kind.number, rev))[1]
+			(first_commit_rev, last_commit_rev, commit_count) = nick_stats.get(author_name, (None, None, 0))
+
+			if first_commit_rev is None:
+				first_commit_rev = rev
+			last_commit_rev = rev
+			commit_count = commit_count + 1
+
+			nick_stats[author_name] = (first_commit_rev, last_commit_rev, commit_count)
+
+			indicate_progress(rev)
+			continue
 
 		summary = client.diff_summarize(
 			args.repo_uri,
@@ -248,7 +278,10 @@ def main():
 	sys.stderr.flush()
 
 	# NOTE: Leaves are files and empty directories
-	dump(tree, digit_count(latest_revision), latest_revision, config=args)
+	if args.authors_mode:
+		dump_nick_stats(nick_stats, digit_count(latest_revision), config=args)
+	else:
+		dump_tree(tree, digit_count(latest_revision), latest_revision, config=args)
 
 
 if __name__ == '__main__':
