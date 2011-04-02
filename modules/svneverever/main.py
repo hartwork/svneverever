@@ -59,8 +59,9 @@ def dump(t, revision_digits, latest_revision, config, level=0, branch_level=-3, 
 
 	if ((branch_level + 2 == level) and not config.show_branches) \
 			or ((tag_level + 2 == level) and not config.show_tags):
-		line_start = ' '*(1 + revision_digits + 2 + revision_digits + 1)
-		indent_print(line_start, ' [..]')
+		if items:
+			line_start = ' '*(1 + revision_digits + 2 + revision_digits + 1)
+			indent_print(line_start, ' [..]')
 		return
 
 	for k, (added_on_rev, last_deleted_on_rev, children) in sorted(items):
