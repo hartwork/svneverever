@@ -55,16 +55,15 @@ def dump(t, revision_digits, latest_revision, config, level=0, branch_level=-3, 
 	def indent_print(line_start, text):
 		print(line_start, '%s%s' % (' '*(4*level), text))
 
+	items = ((k, v) for k, v in t.items() if k)
+
 	if ((branch_level + 2 == level) and not config.show_branches) \
 			or ((tag_level + 2 == level) and not config.show_tags):
 		line_start = ' '*(1 + revision_digits + 2 + revision_digits + 1)
 		indent_print(line_start, ' [..]')
 		return
 
-	for k, (added_on_rev, last_deleted_on_rev, children) in sorted(t.items()):
-		if not k:
-			continue
-
+	for k, (added_on_rev, last_deleted_on_rev, children) in sorted(items):
 		format = '[%%%dd; %%%dd]' % (revision_digits, revision_digits)
 		if last_deleted_on_rev is not None:
 			last_seen_rev = last_deleted_on_rev - 1
