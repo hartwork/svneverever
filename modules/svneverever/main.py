@@ -200,10 +200,13 @@ def main():
 	sys.stderr.write('Analyzing %d revisions...\n' % latest_revision)
 	width = get_terminal_width()
 	
-	def indicate_progress(rev):
+	def indicate_progress(rev, before_work=False):
 		percent = rev * 100.0 / latest_revision
 		seconds_taken = time.time() - start_time
 		seconds_expected = seconds_taken / float(rev) * latest_revision
+		if (rev == latest_revision) and not before_work:
+			percent = 100
+			seconds_expected = seconds_taken
 		sys.stderr.write('\r' + make_progress_bar(percent, width, seconds_taken, seconds_expected))
 		sys.stderr.flush()
 
@@ -211,7 +214,7 @@ def main():
 	
 	for rev in xrange(1, latest_revision + 1):
 		if rev == 1:
-			indicate_progress(rev)
+			indicate_progress(rev, before_work=True)
 
 		if args.authors_mode:
 			author_name = client.revpropget('svn:author', args.repo_uri, pysvn.Revision(pysvn.opt_revision_kind.number, rev))[1]
