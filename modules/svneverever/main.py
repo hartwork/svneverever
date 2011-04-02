@@ -147,8 +147,8 @@ def command_line():
 		'--version',
 		action='version', version='%(prog)s ' + VERSION_STR)
 	parser.add_argument('repo_uri',
-		metavar='LOCATION', action='store',
-		help='Folder or URI to SVN repository')
+		metavar='REPOSITORY', action='store',
+		help='Path or URI to SVN repository')
 	parser.add_argument(
 		'--tags',
 		dest='show_tags', action='store_true', default=False,
