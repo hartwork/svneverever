@@ -53,7 +53,10 @@ def get_terminal_width():
 
 def dump(t, revision_digits, latest_revision, config, level=0, branch_level=-3, tag_level=-3):
 	def indent_print(line_start, text):
-		print(line_start, '%s%s' % (' '*(4*level), text))
+		if config.show_range:
+			print('%s  %s%s' % (line_start, ' '*(4*level), text))
+		else:
+			print('%s%s' % (' '*(4*level), text))
 
 	items = ((k, v) for k, v in t.items() if k)
 
@@ -62,7 +65,7 @@ def dump(t, revision_digits, latest_revision, config, level=0, branch_level=-3, 
 			or level >= config.max_depth:
 		if items and config.show_dots:
 			line_start = ' '*(1 + revision_digits + 2 + revision_digits + 1)
-			indent_print(line_start, ' [..]')
+			indent_print(line_start, '[..]')
 		return
 
 	for k, (added_on_rev, last_deleted_on_rev, children) in sorted(items):
@@ -73,7 +76,7 @@ def dump(t, revision_digits, latest_revision, config, level=0, branch_level=-3, 
 			last_seen_rev = latest_revision
 		visual_rev = format % (added_on_rev, last_seen_rev)
 
-		indent_print(visual_rev, ' /%s' % k)
+		indent_print(visual_rev, '/%s' % k)
 
 		bl = branch_level
 		tl = tag_level
@@ -148,6 +151,10 @@ def command_line():
 		'--no-dots',
 		dest='show_dots', action='store_false', default=True,
 		help='Hide "[..]" omission marker (default: disabled)')
+	parser.add_argument(
+		'--no-range',
+		dest='show_range', action='store_false', default=True,
+		help='Hide revision ranges (default: disabled)')
 	parser.add_argument(
 		'--depth',
 		dest='max_depth', metavar='DEPTH', action='store', type=int, default=-1,
