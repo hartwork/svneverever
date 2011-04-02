@@ -53,7 +53,7 @@ def get_terminal_width():
 
 def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level=-3, tag_level=-3):
 	def indent_print(line_start, text):
-		if config.show_range:
+		if config.show_numbers:
 			print('%s  %s%s' % (line_start, ' '*(4*level), text))
 		else:
 			print('%s%s' % (' '*(4*level), text))
@@ -89,7 +89,7 @@ def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level
 
 
 def dump_nick_stats(nick_stats, revision_digits, config):
-	if config.show_range:
+	if config.show_numbers:
 		format = "%%%dd [%%%dd; %%%dd]  %%s" % (revision_digits, revision_digits, revision_digits)
 		for nick, (first_commit_rev, last_commit_rev, commit_count) in sorted(nick_stats.items()):
 			print(format % (commit_count, first_commit_rev, last_commit_rev, nick))
@@ -162,9 +162,9 @@ def command_line():
 		dest='show_dots', action='store_false', default=True,
 		help='Hide "[..]" omission marker (default: disabled)')
 	parser.add_argument(
-		'--no-range',
-		dest='show_range', action='store_false', default=True,
-		help='Hide revision ranges (default: disabled)')
+		'--no-numbers',
+		dest='show_numbers', action='store_false', default=True,
+		help='Hide numbers, e.g. revision ranges (default: disabled)')
 	parser.add_argument(
 		'--depth',
 		dest='max_depth', metavar='DEPTH', action='store', type=int, default=-1,
