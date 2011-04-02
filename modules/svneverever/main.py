@@ -58,8 +58,9 @@ def dump(t, revision_digits, latest_revision, config, level=0, branch_level=-3, 
 	items = ((k, v) for k, v in t.items() if k)
 
 	if ((branch_level + 2 == level) and not config.show_branches) \
-			or ((tag_level + 2 == level) and not config.show_tags):
-		if items:
+			or ((tag_level + 2 == level) and not config.show_tags) \
+			or level >= config.max_depth:
+		if items and config.show_dots:
 			line_start = ' '*(1 + revision_digits + 2 + revision_digits + 1)
 			indent_print(line_start, ' [..]')
 		return
@@ -143,10 +144,20 @@ def command_line():
 		'--branches',
 		dest='show_branches', action='store_true', default=False,
 		help='Show content of branch folders (default: disabled)')
+	parser.add_argument(
+		'--no-dots',
+		dest='show_dots', action='store_false', default=True,
+		help='Hide "[..]" omission marker (default: disabled)')
+	parser.add_argument(
+		'--depth',
+		dest='max_depth', metavar='DEPTH', action='store', type=int, default=-1,
+		help='Maximum depth to print (starting at 1)')
 
 	args = parser.parse_args()
 
 	args.repo_uri = ensure_uri(args.repo_uri)
+	if args.max_depth < 1:
+		args.max_depth = sys.maxint
 
 	return args
 
