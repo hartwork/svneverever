@@ -174,9 +174,9 @@ def command_line():
 		dest='max_depth', metavar='DEPTH', action='store', type=int, default=-1,
 		help='Maximum depth to print (starting at 1)')
 	parser.add_argument(
-		'--authors',
-		dest='authors_mode', action='store_true', default=False,
-		help='Collect author names instead of path information (default: disabled)')
+		'--committers',
+		dest='nick_stat_mode', action='store_true', default=False,
+		help='Collect committer names instead of path information (default: disabled)')
 
 	args = parser.parse_args()
 
@@ -220,16 +220,16 @@ def main():
 		if rev == 1 and args.show_progress:
 			indicate_progress(rev, before_work=True)
 
-		if args.authors_mode:
-			author_name = client.revpropget('svn:author', args.repo_uri, pysvn.Revision(pysvn.opt_revision_kind.number, rev))[1]
-			(first_commit_rev, last_commit_rev, commit_count) = nick_stats.get(author_name, (None, None, 0))
+		if args.nick_stat_mode:
+			committer_name = client.revpropget('svn:author', args.repo_uri, pysvn.Revision(pysvn.opt_revision_kind.number, rev))[1]
+			(first_commit_rev, last_commit_rev, commit_count) = nick_stats.get(committer_name, (None, None, 0))
 
 			if first_commit_rev is None:
 				first_commit_rev = rev
 			last_commit_rev = rev
 			commit_count = commit_count + 1
 
-			nick_stats[author_name] = (first_commit_rev, last_commit_rev, commit_count)
+			nick_stats[committer_name] = (first_commit_rev, last_commit_rev, commit_count)
 
 			if args.show_progress:
 				indicate_progress(rev)
@@ -290,7 +290,7 @@ def main():
 	sys.stderr.flush()
 
 	# NOTE: Leaves are files and empty directories
-	if args.authors_mode:
+	if args.nick_stat_mode:
 		dump_nick_stats(nick_stats, digit_count(latest_revision), config=args)
 	else:
 		dump_tree(tree, digit_count(latest_revision), latest_revision, config=args)
