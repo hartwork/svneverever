@@ -13,8 +13,12 @@ import fcntl
 import termios
 import struct
 
-USAGE = """
-  %prog  REPOSITORY"""
+try:
+	import argparse
+except ImportError:
+	print("ERROR: You need Python 2.7+ unless you have module argparse "
+		"(package dev-python/argparse on Gentoo) installed independently.", file=sys.stderr)
+	sys.exit(1)
 
 
 def get_terminal_width():
@@ -116,23 +120,32 @@ def make_progress_bar(percent, width, seconds_taken, seconds_expected):
 		hr = 99
 	return '%6.2f%%  (%02d:%02d:%02d remaining)  [%s%s]' % (percent, hr, mr, sr, '#'*fill_len, ' '*open_len)
 
-def main():
-	# Command line interface
-	from optparse import OptionParser
-	from svneverever.version import VERSION_STR
-	parser = OptionParser(usage=USAGE, version=VERSION_STR)
-	(opts, args) = parser.parse_args()
-	if len(args) != 1:
-		parser.print_usage()
-		sys.exit(1)
-	REPO_URI = ensure_uri(args[0])
 
+def command_line():
+	from svneverever.version import VERSION_STR
+	parser = argparse.ArgumentParser(description='Collects path entries across SVN history')
+	parser.add_argument(
+		'--version',
+		action='version', version='%(prog)s ' + VERSION_STR)
+	parser.add_argument('repo_uri',
+		metavar='LOCATION', action='store',
+		help='Folder or URI to SVN repository')
+
+	args = parser.parse_args()
+
+	args.repo_uri = ensure_uri(args.repo_uri)
+
+	return args
+
+
+def main():
+	args = command_line()
 
 	# Build tree from repo
 	client = pysvn.Client()
 	tree = dict()
 	try:
-		latest_revision = client.info2(REPO_URI, recurse=False)[0][1]['last_changed_rev'].number
+		latest_revision = client.info2(args.repo_uri, recurse=False)[0][1]['last_changed_rev'].number
 	except (pysvn.ClientError) as e:
 		sys.stderr.write('ERROR: %s\n' % str(e))
 		sys.exit(1)
@@ -154,9 +167,9 @@ def main():
 			indicate_progress(rev)
 
 		summary = client.diff_summarize(
-			REPO_URI,
+			args.repo_uri,
 			revision1=pysvn.Revision(pysvn.opt_revision_kind.number, rev - 1),
-			url_or_path2=REPO_URI,
+			url_or_path2=args.repo_uri,
 			revision2=pysvn.Revision(pysvn.opt_revision_kind.number, rev),
 			recurse=True,
 			ignore_ancestry=True)
