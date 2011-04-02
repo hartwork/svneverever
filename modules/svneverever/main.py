@@ -51,11 +51,12 @@ def get_terminal_width():
 	return 80
 
 
-def dump(t, revision_digits, latest_revision, level=0, branch_tag_level=-3):
+def dump(t, revision_digits, latest_revision, config, level=0, branch_level=-3, tag_level=-3):
 	def indent_print(line_start, text):
 		print(line_start, '%s%s' % (' '*(4*level), text))
 
-	if branch_tag_level + 2 == level:
+	if ((branch_level + 2 == level) and not config.show_branches) \
+			or ((tag_level + 2 == level) and not config.show_tags):
 		line_start = ' '*(1 + revision_digits + 2 + revision_digits + 1)
 		indent_print(line_start, ' [..]')
 		return
@@ -72,11 +73,15 @@ def dump(t, revision_digits, latest_revision, level=0, branch_tag_level=-3):
 		visual_rev = format % (added_on_rev, last_seen_rev)
 
 		indent_print(visual_rev, ' /%s' % k)
-		if k in ('branches', 'tags'):
-			btl = level
-		else:
-			btl = branch_tag_level
-		dump(children, revision_digits, latest_revision, level=level + 1, branch_tag_level=btl)
+
+		bl = branch_level
+		tl = tag_level
+		if k == 'branches':
+			bl = level
+		elif k == 'tags':
+			tl = level
+
+		dump(children, revision_digits, latest_revision, config, level=level + 1, branch_level=bl, tag_level=tl)
 
 
 def ensure_uri(text):
@@ -130,6 +135,14 @@ def command_line():
 	parser.add_argument('repo_uri',
 		metavar='LOCATION', action='store',
 		help='Folder or URI to SVN repository')
+	parser.add_argument(
+		'--tags',
+		dest='show_tags', action='store_true', default=False,
+		help='Show content of tag folders (default: disabled)')
+	parser.add_argument(
+		'--branches',
+		dest='show_branches', action='store_true', default=False,
+		help='Show content of branch folders (default: disabled)')
 
 	args = parser.parse_args()
 
@@ -217,7 +230,7 @@ def main():
 	sys.stderr.flush()
 
 	# NOTE: Leaves are files and empty directories
-	dump(tree, digit_count(latest_revision), latest_revision)
+	dump(tree, digit_count(latest_revision), latest_revision, config=args)
 
 
 if __name__ == '__main__':
