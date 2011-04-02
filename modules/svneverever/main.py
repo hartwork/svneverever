@@ -75,17 +75,6 @@ def dump(t, revision_digits, latest_revision, level=0, branch_tag_level=-3):
 		dump(children, revision_digits, latest_revision, level=level + 1, branch_tag_level=btl)
 
 
-def hide_branch_and_tag_content(t, level=0, branch_tag_level=-2):
-	for k, (added_on_rev, last_deleted_on_rev, children) in list(t.items()):
-		if branch_tag_level + 1 == level:
-			continue
-		if k in ('branches', 'tags'):
-			btl = level
-		else:
-			btl = branch_tag_level
-		hide_branch_and_tag_content(children, level=level + 1, branch_tag_level=btl)
-
-
 def ensure_uri(text):
 	import re
 	svn_uri_detector = re.compile('^[A-Za-z+]+://')
@@ -215,7 +204,6 @@ def main():
 	sys.stderr.flush()
 
 	# NOTE: Leaves are files and empty directories
-	hide_branch_and_tag_content(tree)
 	dump(tree, digit_count(latest_revision), latest_revision)
 
 
