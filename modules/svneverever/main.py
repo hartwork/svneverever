@@ -69,7 +69,7 @@ def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level
 		return
 
 	for k, (added_on_rev, last_deleted_on_rev, children) in sorted(items):
-		format = '[%%%dd; %%%dd]' % (revision_digits, revision_digits)
+		format = '(%%%dd; %%%dd)' % (revision_digits, revision_digits)
 		if last_deleted_on_rev is not None:
 			last_seen_rev = last_deleted_on_rev - 1
 		else:
@@ -90,7 +90,7 @@ def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level
 
 def dump_nick_stats(nick_stats, revision_digits, config):
 	if config.show_numbers:
-		format = "%%%dd [%%%dd; %%%dd]  %%s" % (revision_digits, revision_digits, revision_digits)
+		format = "%%%dd (%%%dd; %%%dd)  %%s" % (revision_digits, revision_digits, revision_digits)
 		for nick, (first_commit_rev, last_commit_rev, commit_count) in sorted(nick_stats.items()):
 			print(format % (commit_count, first_commit_rev, last_commit_rev, nick))
 	else:
