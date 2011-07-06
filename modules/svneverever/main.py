@@ -264,9 +264,10 @@ def main():
 
 		def mark_deleted_recursively(sub_tree, name, rev):
 			added_on_rev, last_deleted_on_rev, children = sub_tree[name]
-			sub_tree[name] = (added_on_rev, rev, children)
-			for child_name in children.keys():
-				mark_deleted_recursively(children, child_name, rev)
+			if last_deleted_on_rev is None:
+				sub_tree[name] = (added_on_rev, rev, children)
+				for child_name in children.keys():
+					mark_deleted_recursively(children, child_name, rev)
 
 		dirs_deleted = [e.path for e in summary if is_directory_deletion(e)]
 		for d in dirs_deleted:
