@@ -52,12 +52,16 @@ def get_terminal_width():
 	return 80
 
 
-def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level=-3, tag_level=-3):
+def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level=-3, tag_level=-3, parent_dir=''):
 	def indent_print(line_start, text):
-		if config.show_numbers:
-			print('%s  %s%s' % (line_start, ' '*(4*level), text))
+		if config.flat_tree:
+			level_text = parent_dir
 		else:
-			print('%s%s' % (' '*(4*level), text))
+			level_text = ' '*(4*level)
+		if config.show_numbers:
+			print('%s  %s%s' % (line_start, level_text, text))
+		else:
+			print('%s%s' % (level_text, text))
 
 	items = ((k, v) for k, v in t.items() if k)
 
@@ -85,8 +89,7 @@ def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level
 			bl = level
 		elif k == 'tags':
 			tl = level
-
-		dump_tree(children, revision_digits, latest_revision, config, level=level + 1, branch_level=bl, tag_level=tl)
+		dump_tree(children, revision_digits, latest_revision, config, level=level + 1, branch_level=bl, tag_level=tl, parent_dir= '%s/%s' % (parent_dir, k))
 
 
 def dump_nick_stats(nick_stats, revision_digits, config):
@@ -178,6 +181,10 @@ def command_line():
 		'--committers',
 		dest='nick_stat_mode', action='store_true', default=False,
 		help='Collect committer names instead of path information (default: disabled)')
+	parser.add_argument(
+		'--flat-tree',
+		dest='flat_tree', action='store_true', default=False,
+		help='Show a flatten tree (default: disabled)')
 
 	args = parser.parse_args()
 
