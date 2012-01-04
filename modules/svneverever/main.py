@@ -182,9 +182,9 @@ def command_line():
 		dest='nick_stat_mode', action='store_true', default=False,
 		help='Collect committer names instead of path information (default: disabled)')
 	parser.add_argument(
-		'--flat-tree',
+		'--flatten',
 		dest='flat_tree', action='store_true', default=False,
-		help='Show a flatten tree (default: disabled)')
+		help='Flatten tree (default: disabled)')
 
 	args = parser.parse_args()
 
