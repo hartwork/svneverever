@@ -268,6 +268,8 @@ def main():
 					sub_tree[name] = (added_on_rev, last_deleted_on_rev, children)
 				else:
 					added_on_rev, last_deleted_on_rev, children = sub_tree[name]
+					if last_deleted_on_rev is not None:
+						sub_tree[name] = (added_on_rev, None, children)
 				sub_tree = children
 
 		def mark_deleted_recursively(sub_tree, name, rev):
