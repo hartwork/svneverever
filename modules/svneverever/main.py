@@ -59,9 +59,9 @@ def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level
 		else:
 			level_text = ' '*(4*level)
 		if config.show_numbers:
-			print('%s  %s%s' % (line_start, level_text, text))
+			print('%s  %s%s' % (line_start, level_text, text.encode('utf-8')))
 		else:
-			print('%s%s' % (level_text, text))
+			print('%s%s' % (level_text, text.encode('utf-8')))
 
 	items = ((k, v) for k, v in t.items() if k)
 
