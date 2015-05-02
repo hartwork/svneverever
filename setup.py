@@ -13,7 +13,7 @@ setup(
     description='Tool collecting path entries across SVN history',
     license='GPL v3 or later',
     version=VERSION_STR,
-    url='http://git.goodpoint.de/?p=svneverever.git;a=summary',
+    url='https://github.com/hartwork/svneverever',
     author='Sebastian Pipping',
     author_email='sebastian@pipping.org',
     package_dir={'':'modules', },
