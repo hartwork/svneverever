@@ -84,10 +84,21 @@ You can see a few things in this very output:
  * That a branch called "libbs2b-config-header" got deleted
    at revision 76.
 
+ * In which order bs2b plug-ins appeared over time.
+
  * That tag "libbs2b-2.2.1" was deleted at the same revision that
    a tag folder "libbs2b" appeared.
 
- * In which order bs2b plug-ins appeared over time.
+Let's see if that tag was _actually_ moved into that tag subfolder.  Yes it was:
+
+-----------------------------------------------------------------------------------------
+# svneverever --no-progress --tags --flatten bs2b_svn_store/ | grep '2.2.1$'
+Analyzing 175 revisions...
+
+(110; 175)  /tags/description/2.2.1
+( 47; 175)  /tags/libbs2b/2.2.1
+( 28;  46)  /tags/libbs2b-2.2.1
+-----------------------------------------------------------------------------------------
 
 Next I have a look at who the committers where, when they joined or left
 and how many commits the did (though that last number is of limited value).
