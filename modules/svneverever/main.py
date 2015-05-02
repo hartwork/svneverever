@@ -22,9 +22,6 @@ except ImportError:
 	sys.exit(1)
 
 
-_FALLBACK_ENCODING = 'UTF-8'
-
-
 def get_terminal_width():
 	try:
 		return int(os.environ['COLUMNS'])
@@ -199,11 +196,6 @@ def command_line():
 
 
 def main():
-	# Avoid unintended encoding of output to ASCII (issue #1)
-	if sys.stdout.encoding is None and 'PYTHONIOENCODING' not in os.environ:
-		os.environ['PYTHONIOENCODING'] = _FALLBACK_ENCODING
-		os.execv(sys.argv[0], sys.argv)
-
 	args = command_line()
 
 	# Build tree from repo
