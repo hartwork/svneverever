@@ -52,6 +52,10 @@ def get_terminal_width():
 	return 80
 
 
+def _encode(text):
+    return text.encode(sys.stdout.encoding or 'UTF-8', 'replace')
+
+
 def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level=-3, tag_level=-3, parent_dir=''):
 	def indent_print(line_start, text):
 		if config.flat_tree:
@@ -59,9 +63,9 @@ def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level
 		else:
 			level_text = ' '*(4*level)
 		if config.show_numbers:
-			print('%s  %s%s' % (line_start, level_text, text))
+			print('%s  %s%s' % (line_start, level_text, _encode(text)))
 		else:
-			print('%s%s' % (level_text, text))
+			print('%s%s' % (level_text, _encode(text)))
 
 	items = ((k, v) for k, v in t.items() if k)
 
@@ -96,10 +100,10 @@ def dump_nick_stats(nick_stats, revision_digits, config):
 	if config.show_numbers:
 		format = "%%%dd (%%%dd; %%%dd)  %%s" % (revision_digits, revision_digits, revision_digits)
 		for nick, (first_commit_rev, last_commit_rev, commit_count) in sorted(nick_stats.items()):
-			print(format % (commit_count, first_commit_rev, last_commit_rev, nick))
+			print(format % (commit_count, first_commit_rev, last_commit_rev, _encode(nick)))
 	else:
 		for nick, (first_commit_rev, last_commit_rev, commit_count) in sorted(nick_stats.items()):
-			print(nick)
+			print(_encode(nick))
 
 
 def ensure_uri(text):
