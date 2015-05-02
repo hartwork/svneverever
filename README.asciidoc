@@ -9,10 +9,10 @@ https://github.com/svn-all-fast-export/svn2git[svn-all-fast-export]
 
 Example
 -------
-In the following shell session I am dumping the SVN history of
+In the following shell session I am first dumping the SVN history of
 http://bs2b.sourceforge.net/[headphone effect library bs2b]
 using http://rsvndump.sourceforge.net/[rsvndump].
-(I could pass svn://svn.code.sf.net/p/bs2b/code/ to *svneverever* directly
+(I could pass `svn://svn.code.sf.net/p/bs2b/code/` to *svneverever* directly
 but it would mean to download all history for each run to *svneverever*.)
 
 -----------------------------------------------------------------------------------------
