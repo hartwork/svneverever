@@ -1,10 +1,16 @@
 # Copyright (C) 2011 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GPL v3 or later
 
+DESTDIR = /
+PYTHON = python
+
 all:
 
 dist:
-	rm -f MANIFEST
-	./setup.py sdist
+	$(RM) MANIFEST
+	$(PYTHON) setup.py sdist
 
-.PHONY: dist
+install:
+	$(PYTHON) setup.py install --root "$(DESTDIR)"
+
+.PHONY: all dist install
