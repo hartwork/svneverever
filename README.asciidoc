@@ -111,7 +111,7 @@ you can install *svneverever* using pip from PyPI
 
 or from a Git clone:
 -----------------------------------------------------------------------------
-# https://github.com/hartwork/svneverever.git
+# git clone https://github.com/hartwork/svneverever.git
 # cd svneverever
 # python setup.py install
 -----------------------------------------------------------------------------
