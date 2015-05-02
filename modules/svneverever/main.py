@@ -74,7 +74,10 @@ def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level
 			or level >= config.max_depth:
 		if items and config.show_dots:
 			line_start = ' '*(1 + revision_digits + 2 + revision_digits + 1)
-			indent_print(line_start, '[..]')
+			if config.flat_tree:
+				indent_print(line_start, '/[..]')
+			else:
+				indent_print(line_start, '[..]')
 		return
 
 	for k, (added_on_rev, last_deleted_on_rev, children) in sorted(items):
