@@ -22,6 +22,11 @@ except ImportError:
 	sys.exit(1)
 
 
+_EPILOG = """\
+Please report bugs at https://github.com/hartwork/svneverever.  Thank you!
+"""
+
+
 def get_terminal_width():
 	try:
 		return int(os.environ['COLUMNS'])
@@ -153,7 +158,11 @@ def make_progress_bar(percent, width, seconds_taken, seconds_expected):
 
 def command_line():
 	from svneverever.version import VERSION_STR
-	parser = argparse.ArgumentParser(description='Collects path entries across SVN history')
+	parser = argparse.ArgumentParser(
+			description='Collects path entries across SVN history',
+			epilog=_EPILOG,
+			formatter_class=argparse.RawDescriptionHelpFormatter,
+			)
 	parser.add_argument(
 		'--version',
 		action='version', version='%(prog)s ' + VERSION_STR)
