@@ -157,4 +157,6 @@ optional arguments:
   --committers   Collect committer names instead of path information (default:
                  disabled)
   --flatten      Flatten tree (default: disabled)
+
+Please report bugs at https://github.com/hartwork/svneverever.  Thank you!
 -----------------------------------------------------------------------------
