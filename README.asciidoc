@@ -117,7 +117,7 @@ Installation
 If your Linux distribution of choice does not come with a package for *svneverever* yet,
 you can install *svneverever* using pip from PyPI
 -----------------------------------------------------------------------------
-# pip instal svneverever
+# pip install svneverever
 -----------------------------------------------------------------------------
 
 or from a Git clone:
