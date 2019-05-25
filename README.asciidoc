@@ -124,10 +124,10 @@ or from a Git clone:
 -----------------------------------------------------------------------------
 # git clone https://github.com/hartwork/svneverever.git
 # cd svneverever
-# python setup.py install
+# python2 setup.py install
 -----------------------------------------------------------------------------
 
-Besides Python, *svneverever*'s only dependency is
+Besides Python 2.7.x, *svneverever*'s only dependency is
 http://pysvn.tigris.org/project_downloads.html[pysvn].
 
 
