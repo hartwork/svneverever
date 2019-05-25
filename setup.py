@@ -14,7 +14,6 @@ setup(
     license='GPL v3 or later',
     version=VERSION_STR,
     url='https://github.com/hartwork/svneverever',
-    download_url='https://github.com/hartwork/svneverever/archive/v%s.tar.gz' % VERSION_STR,
     author='Sebastian Pipping',
     author_email='sebastian@pipping.org',
     package_dir={'':'modules', },
