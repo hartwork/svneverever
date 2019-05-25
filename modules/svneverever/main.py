@@ -169,35 +169,41 @@ def command_line():
 	parser.add_argument('repo_uri',
 		metavar='REPOSITORY', action='store',
 		help='Path or URI to SVN repository')
-	parser.add_argument(
-		'--tags',
-		dest='show_tags', action='store_true', default=False,
-		help='Show content of tag folders (default: disabled)')
-	parser.add_argument(
-		'--branches',
-		dest='show_branches', action='store_true', default=False,
-		help='Show content of branch folders (default: disabled)')
-	parser.add_argument(
-		'--no-dots',
-		dest='show_dots', action='store_false', default=True,
-		help='Hide "[..]" omission marker (default: disabled)')
-	parser.add_argument(
-		'--no-numbers',
-		dest='show_numbers', action='store_false', default=True,
-		help='Hide numbers, e.g. revision ranges (default: disabled)')
-	parser.add_argument(
-		'--no-progress',
-		dest='show_progress', action='store_false', default=True,
-		help='Hide progress bar (default: disabled)')
-	parser.add_argument(
-		'--depth',
-		dest='max_depth', metavar='DEPTH', action='store', type=int, default=-1,
-		help='Maximum depth to print (starting at 1)')
-	parser.add_argument(
+
+	modes = parser.add_argument_group('mode selection arguments')
+	modes.add_argument(
 		'--committers',
 		dest='nick_stat_mode', action='store_true', default=False,
 		help='Collect committer names instead of path information (default: disabled)')
-	parser.add_argument(
+
+	common = parser.add_argument_group('common arguments')
+	common.add_argument(
+		'--no-numbers',
+		dest='show_numbers', action='store_false', default=True,
+		help='Hide numbers, e.g. revision ranges (default: disabled)')
+	common.add_argument(
+		'--no-progress',
+		dest='show_progress', action='store_false', default=True,
+		help='Hide progress bar (default: disabled)')
+
+	path_tree_mode = parser.add_argument_group('path tree mode arguments')
+	path_tree_mode.add_argument(
+		'--tags',
+		dest='show_tags', action='store_true', default=False,
+		help='Show content of tag folders (default: disabled)')
+	path_tree_mode.add_argument(
+		'--branches',
+		dest='show_branches', action='store_true', default=False,
+		help='Show content of branch folders (default: disabled)')
+	path_tree_mode.add_argument(
+		'--no-dots',
+		dest='show_dots', action='store_false', default=True,
+		help='Hide "[..]" omission marker (default: disabled)')
+	path_tree_mode.add_argument(
+		'--depth',
+		dest='max_depth', metavar='DEPTH', action='store', type=int, default=-1,
+		help='Maximum depth to print (starting at 1)')
+	path_tree_mode.add_argument(
 		'--flatten',
 		dest='flat_tree', action='store_true', default=False,
 		help='Flatten tree (default: disabled)')
