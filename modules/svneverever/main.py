@@ -208,6 +208,13 @@ def command_line():
 		dest='flat_tree', action='store_true', default=False,
 		help='Flatten tree (default: disabled)')
 
+	committer_mode = parser.add_argument_group('committer mode arguments')
+	committer_mode.add_argument(
+		'--unknown-committer',
+		dest='unknown_committer_name', metavar='NAME', default='<unknown>',
+		help='Committer name to use for commits'
+			' without a proper svn:author property (default: "%(default)s")')
+
 	args = parser.parse_args()
 
 	args.repo_uri = ensure_uri(args.repo_uri)
@@ -252,6 +259,8 @@ def main():
 
 		if args.nick_stat_mode:
 			committer_name = client.revpropget('svn:author', args.repo_uri, pysvn.Revision(pysvn.opt_revision_kind.number, rev))[1]
+			if not committer_name:
+				committer_name = args.unknown_committer_name
 			(first_commit_rev, last_commit_rev, commit_count) = nick_stats.get(committer_name, (None, None, 0))
 
 			if first_commit_rev is None:
