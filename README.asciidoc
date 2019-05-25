@@ -135,28 +135,39 @@ Usage
 -----
 -----------------------------------------------------------------------------
 # svneverever --help
-usage: svneverever [-h] [--version] [--tags] [--branches] [--no-dots]
-                   [--no-numbers] [--no-progress] [--depth DEPTH]
-                   [--committers] [--flatten]
+usage: svneverever [-h] [--version] [--committers] [--no-numbers]
+                   [--no-progress] [--tags] [--branches] [--no-dots]
+                   [--depth DEPTH] [--flatten] [--unknown-committer NAME]
                    REPOSITORY
 
 Collects path entries across SVN history
 
 positional arguments:
-  REPOSITORY     Path or URI to SVN repository
+  REPOSITORY            Path or URI to SVN repository
 
 optional arguments:
-  -h, --help     show this help message and exit
-  --version      show program's version number and exit
-  --tags         Show content of tag folders (default: disabled)
-  --branches     Show content of branch folders (default: disabled)
-  --no-dots      Hide "[..]" omission marker (default: disabled)
-  --no-numbers   Hide numbers, e.g. revision ranges (default: disabled)
-  --no-progress  Hide progress bar (default: disabled)
-  --depth DEPTH  Maximum depth to print (starting at 1)
-  --committers   Collect committer names instead of path information (default:
-                 disabled)
-  --flatten      Flatten tree (default: disabled)
+  -h, --help            show this help message and exit
+  --version             show program's version number and exit
+
+mode selection arguments:
+  --committers          Collect committer names instead of path information
+                        (default: disabled)
+
+common arguments:
+  --no-numbers          Hide numbers, e.g. revision ranges (default: disabled)
+  --no-progress         Hide progress bar (default: disabled)
+
+path tree mode arguments:
+  --tags                Show content of tag folders (default: disabled)
+  --branches            Show content of branch folders (default: disabled)
+  --no-dots             Hide "[..]" omission marker (default: disabled)
+  --depth DEPTH         Maximum depth to print (starting at 1)
+  --flatten             Flatten tree (default: disabled)
+
+committer mode arguments:
+  --unknown-committer NAME
+                        Committer name to use for commits without a proper
+                        svn:author property (default: "<unknown>")
 
 Please report bugs at https://github.com/hartwork/svneverever.  Thank you!
 -----------------------------------------------------------------------------
