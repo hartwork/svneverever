@@ -74,7 +74,10 @@ def _get_terminal_size_or_default():
     return _OsTerminalSize(columns=80, lines=24)
 
 
-def _encode(text):
+def _for_print(text):
+    if sys.version_info >= (3, ):
+        return text
+
     return text.encode(sys.stdout.encoding or 'UTF-8', 'replace')
 
 
@@ -86,9 +89,9 @@ def dump_tree(t, revision_digits, latest_revision, config,
         else:
             level_text = ' '*(4*level)
         if config.show_numbers:
-            print('{}  {}{}'.format(line_start, level_text, _encode(text)))
+            print('{}  {}{}'.format(line_start, level_text, _for_print(text)))
         else:
-            print('{}{}'.format(level_text, _encode(text)))
+            print('{}{}'.format(level_text, _for_print(text)))
 
     items = ((k, v) for k, v in t.items() if k)
 
@@ -132,11 +135,11 @@ def dump_nick_stats(nick_stats, revision_digits, config):
         for nick, (first_commit_rev, last_commit_rev, commit_count) \
                 in sorted(nick_stats.items()):
             print(format % (commit_count, first_commit_rev, last_commit_rev,
-                            _encode(nick)))
+                            _for_print(nick)))
     else:
         for nick, (first_commit_rev, last_commit_rev, commit_count) \
                 in sorted(nick_stats.items()):
-            print(_encode(nick))
+            print(_for_print(nick))
 
 
 def ensure_uri(text):
