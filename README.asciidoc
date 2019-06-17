@@ -127,7 +127,7 @@ or from a Git clone:
 # python setup.py install
 -----------------------------------------------------------------------------
 
-Besides Python 2.7.x, *svneverever*'s only dependency is
+Besides Python 2.7/3.5/3.6, *svneverever*'s only dependency is
 http://pysvn.tigris.org/project_downloads.html[pysvn].
 
 
