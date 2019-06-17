@@ -66,8 +66,6 @@ def _get_terminal_size_or_default():
         fd = os.open(os.ctermid(), os.O_RDONLY)
         try:
             return query_fd(fd)
-        except Exception:
-            pass
         finally:
             os.close(fd)
     except Exception:
