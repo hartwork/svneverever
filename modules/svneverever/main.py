@@ -87,9 +87,9 @@ def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level
 		else:
 			level_text = ' '*(4*level)
 		if config.show_numbers:
-			print('%s  %s%s' % (line_start, level_text, _encode(text)))
+			print('{}  {}{}'.format(line_start, level_text, _encode(text)))
 		else:
-			print('%s%s' % (level_text, _encode(text)))
+			print('{}{}'.format(level_text, _encode(text)))
 
 	items = ((k, v) for k, v in t.items() if k)
 
@@ -120,7 +120,7 @@ def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level
 			bl = level
 		elif k == 'tags':
 			tl = level
-		dump_tree(children, revision_digits, latest_revision, config, level=level + 1, branch_level=bl, tag_level=tl, parent_dir= '%s/%s' % (parent_dir, k))
+		dump_tree(children, revision_digits, latest_revision, config, level=level + 1, branch_level=bl, tag_level=tl, parent_dir= '{}/{}'.format(parent_dir, k))
 
 
 def dump_nick_stats(nick_stats, revision_digits, config):
