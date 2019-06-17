@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010-2011 Sebastian Pipping <sebastian@pipping.org>
+# Copyright (C) 2010-2019 Sebastian Pipping <sebastian@pipping.org>
 # Copyright (C) 2011      Wouter Haffmans <wouter@boxplosive.nl>
 # Licensed under GPL v3 or later
 #

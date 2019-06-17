@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# Copyright (C) 2010 Sebastian Pipping <sebastian@pipping.org>
+# Copyright (C) 2010-2019 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GPL v3 or later
 
 from distutils.core import setup
