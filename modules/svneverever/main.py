@@ -21,7 +21,8 @@ try:
     import argparse
 except ImportError:
     print("ERROR: You need Python 2.7+ unless you have module argparse "
-        "(package dev-python/argparse on Gentoo) installed independently.", file=sys.stderr)
+          "(package dev-python/argparse on Gentoo) installed independently.",
+          file=sys.stderr)
     sys.exit(1)
 
 
@@ -39,8 +40,7 @@ def _os_get_terminal_size_pre_3_3(fd=0):
     import termios
 
     lines, columns, _ph, _pw = struct.unpack('HHHH', (
-        fcntl.ioctl(fd, termios.TIOCGWINSZ,
-            struct.pack('HHHH', 0, 0, 0, 0))))
+        fcntl.ioctl(fd, termios.TIOCGWINSZ, struct.pack('HHHH', 0, 0, 0, 0))))
 
     return _OsTerminalSize(columns=columns, lines=lines)
 
@@ -48,7 +48,7 @@ def _os_get_terminal_size_pre_3_3(fd=0):
 def _get_terminal_size_or_default():
     try:
         return int(os.environ['COLUMNS'])
-    except:
+    except (KeyError, ValueError):
         pass
 
     if sys.version_info >= (3, 3):
@@ -59,18 +59,18 @@ def _get_terminal_size_or_default():
     for fd in (0, 1, 2):
         try:
             return query_fd(fd)
-        except:
+        except Exception:
             pass
 
     try:
         fd = os.open(os.ctermid(), os.O_RDONLY)
         try:
             return query_fd(fd)
-        except:
+        except Exception:
             pass
         finally:
             os.close(fd)
-    except:
+    except Exception:
         pass
 
     return _OsTerminalSize(columns=80, lines=24)
@@ -80,7 +80,8 @@ def _encode(text):
     return text.encode(sys.stdout.encoding or 'UTF-8', 'replace')
 
 
-def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level=-3, tag_level=-3, parent_dir=''):
+def dump_tree(t, revision_digits, latest_revision, config,
+              level=0, branch_level=-3, tag_level=-3, parent_dir=''):
     def indent_print(line_start, text):
         if config.flat_tree:
             level_text = parent_dir
@@ -120,16 +121,23 @@ def dump_tree(t, revision_digits, latest_revision, config, level=0, branch_level
             bl = level
         elif k == 'tags':
             tl = level
-        dump_tree(children, revision_digits, latest_revision, config, level=level + 1, branch_level=bl, tag_level=tl, parent_dir= '{}/{}'.format(parent_dir, k))
+        dump_tree(children, revision_digits, latest_revision, config,
+                  level=level + 1, branch_level=bl, tag_level=tl,
+                  parent_dir='{}/{}'.format(parent_dir, k))
 
 
 def dump_nick_stats(nick_stats, revision_digits, config):
     if config.show_numbers:
-        format = "%%%dd (%%%dd; %%%dd)  %%s" % (revision_digits, revision_digits, revision_digits)
-        for nick, (first_commit_rev, last_commit_rev, commit_count) in sorted(nick_stats.items()):
-            print(format % (commit_count, first_commit_rev, last_commit_rev, _encode(nick)))
+        format = "%%%dd (%%%dd; %%%dd)  %%s" % (revision_digits,
+                                                revision_digits,
+                                                revision_digits)
+        for nick, (first_commit_rev, last_commit_rev, commit_count) \
+                in sorted(nick_stats.items()):
+            print(format % (commit_count, first_commit_rev, last_commit_rev,
+                            _encode(nick)))
     else:
-        for nick, (first_commit_rev, last_commit_rev, commit_count) in sorted(nick_stats.items()):
+        for nick, (first_commit_rev, last_commit_rev, commit_count) \
+                in sorted(nick_stats.items()):
             print(_encode(nick))
 
 
@@ -171,7 +179,8 @@ def make_progress_bar(percent, width, seconds_taken, seconds_expected):
     hr, mr, sr = hms(seconds_remaining)
     if hr > 99:
         hr = 99
-    return '%6.2f%%  (%02d:%02d:%02d remaining)  [%s%s]' % (percent, hr, mr, sr, '#'*fill_len, ' '*open_len)
+    return ('%6.2f%%  (%02d:%02d:%02d remaining)  [%s%s]'
+            % (percent, hr, mr, sr, '#'*fill_len, ' '*open_len))
 
 
 def command_line():
@@ -184,7 +193,8 @@ def command_line():
     parser.add_argument(
         '--version',
         action='version', version='%(prog)s ' + VERSION_STR)
-    parser.add_argument('repo_uri',
+    parser.add_argument(
+        'repo_uri',
         metavar='REPOSITORY', action='store',
         help='Path or URI to SVN repository')
 
@@ -192,7 +202,8 @@ def command_line():
     modes.add_argument(
         '--committers',
         dest='nick_stat_mode', action='store_true', default=False,
-        help='Collect committer names instead of path information (default: disabled)')
+        help='Collect committer names instead of path information '
+             '(default: disabled)')
 
     common = parser.add_argument_group('common arguments')
     common.add_argument(
@@ -219,7 +230,8 @@ def command_line():
         help='Hide "[..]" omission marker (default: disabled)')
     path_tree_mode.add_argument(
         '--depth',
-        dest='max_depth', metavar='DEPTH', action='store', type=int, default=-1,
+        dest='max_depth', metavar='DEPTH', action='store',
+        type=int, default=-1,
         help='Maximum depth to print (starting at 1)')
     path_tree_mode.add_argument(
         '--flatten',
@@ -231,7 +243,7 @@ def command_line():
         '--unknown-committer',
         dest='unknown_committer_name', metavar='NAME', default='<unknown>',
         help='Committer name to use for commits'
-            ' without a proper svn:author property (default: "%(default)s")')
+             ' without a proper svn:author property (default: "%(default)s")')
 
     args = parser.parse_args()
 
@@ -249,11 +261,11 @@ def main():
     client = pysvn.Client()
     tree = dict()
     try:
-        latest_revision = client.info2(args.repo_uri, recurse=False)[0][1]['last_changed_rev'].number
+        latest_revision = client.info2(
+            args.repo_uri, recurse=False)[0][1]['last_changed_rev'].number
     except (pysvn.ClientError) as e:
         sys.stderr.write('ERROR: %s\n' % str(e))
         sys.exit(1)
-    prev_percent = 0
 
     start_time = time.time()
     sys.stderr.write('Analyzing %d revisions...\n' % latest_revision)
@@ -266,7 +278,9 @@ def main():
         if (rev == latest_revision) and not before_work:
             percent = 100
             seconds_expected = seconds_taken
-        sys.stderr.write('\r' + make_progress_bar(percent, width, seconds_taken, seconds_expected))
+        sys.stderr.write('\r' + make_progress_bar(percent, width,
+                                                  seconds_taken,
+                                                  seconds_expected))
         sys.stderr.flush()
 
     nick_stats = dict()
@@ -276,17 +290,21 @@ def main():
             indicate_progress(rev, before_work=True)
 
         if args.nick_stat_mode:
-            committer_name = client.revpropget('svn:author', args.repo_uri, pysvn.Revision(pysvn.opt_revision_kind.number, rev))[1]
+            committer_name = client.revpropget(
+                'svn:author', args.repo_uri,
+                pysvn.Revision(pysvn.opt_revision_kind.number, rev))[1]
             if not committer_name:
                 committer_name = args.unknown_committer_name
-            (first_commit_rev, last_commit_rev, commit_count) = nick_stats.get(committer_name, (None, None, 0))
+            (first_commit_rev, last_commit_rev, commit_count) \
+                = nick_stats.get(committer_name, (None, None, 0))
 
             if first_commit_rev is None:
                 first_commit_rev = rev
             last_commit_rev = rev
             commit_count = commit_count + 1
 
-            nick_stats[committer_name] = (first_commit_rev, last_commit_rev, commit_count)
+            nick_stats[committer_name] = (first_commit_rev, last_commit_rev,
+                                          commit_count)
 
             if args.show_progress:
                 indicate_progress(rev)
@@ -301,22 +319,27 @@ def main():
             ignore_ancestry=True)
 
         def is_directory_addition(summary_entry):
-            return summary_entry.summarize_kind == pysvn.diff_summarize_kind.added \
-                and summary_entry.node_kind == pysvn.node_kind.dir
+            return (summary_entry.summarize_kind
+                    == pysvn.diff_summarize_kind.added
+                    and summary_entry.node_kind == pysvn.node_kind.dir)
 
         def is_directory_deletion(summary_entry):
-            return summary_entry.summarize_kind == pysvn.diff_summarize_kind.delete \
-                and summary_entry.node_kind == pysvn.node_kind.dir
+            return (summary_entry.summarize_kind
+                    == pysvn.diff_summarize_kind.delete
+                    and summary_entry.node_kind == pysvn.node_kind.dir)
 
         dirs_added = [e.path for e in summary if is_directory_addition(e)]
         for d in dirs_added:
             sub_tree = tree
             for name in d.split('/'):
                 if name not in sub_tree:
-                    added_on_rev, last_deleted_on_rev, children = rev, None, dict()
-                    sub_tree[name] = (added_on_rev, last_deleted_on_rev, children)
+                    added_on_rev, last_deleted_on_rev, children \
+                        = rev, None, dict()
+                    sub_tree[name] = (added_on_rev, last_deleted_on_rev,
+                                      children)
                 else:
-                    added_on_rev, last_deleted_on_rev, children = sub_tree[name]
+                    added_on_rev, last_deleted_on_rev, children \
+                        = sub_tree[name]
                     if last_deleted_on_rev is not None:
                         sub_tree[name] = (added_on_rev, None, children)
                 sub_tree = children
@@ -337,7 +360,8 @@ def main():
                 if i == comps_len - 1:
                     mark_deleted_recursively(sub_tree, name, rev)
                 else:
-                    added_on_rev, last_deleted_on_rev, children = sub_tree[name]
+                    added_on_rev, last_deleted_on_rev, children \
+                        = sub_tree[name]
                     sub_tree = children
 
         if args.show_progress:
@@ -353,7 +377,8 @@ def main():
     if args.nick_stat_mode:
         dump_nick_stats(nick_stats, digit_count(latest_revision), config=args)
     else:
-        dump_tree(tree, digit_count(latest_revision), latest_revision, config=args)
+        dump_tree(tree, digit_count(latest_revision), latest_revision,
+                  config=args)
 
 
 if __name__ == '__main__':
