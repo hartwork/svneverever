@@ -5,13 +5,14 @@
 # Licensed under GPL v3 or later
 #
 from __future__ import print_function
-import pysvn
-import sys
+
 import math
 import os
+import sys
 import time
 from collections import namedtuple
 
+import pysvn
 import six
 from six.moves import xrange
 from six.moves.urllib.parse import quote as urllib_parse_quote
