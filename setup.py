@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 # Copyright (C) 2010 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GPL v3 or later
 
