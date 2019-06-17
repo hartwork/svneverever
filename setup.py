@@ -19,6 +19,9 @@ setup(
     package_dir={'':'modules', },
     packages=['svneverever', ],
     scripts=['svneverever', ],
+    install_requires=[
+        'six',
+    ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',

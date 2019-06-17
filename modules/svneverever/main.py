@@ -14,6 +14,10 @@ import fcntl
 import termios
 import struct
 
+import six
+from six.moves import xrange
+from six.moves.urllib.parse import quote as urllib_parse_quote
+
 try:
 	import argparse
 except ImportError:
@@ -121,9 +125,8 @@ def ensure_uri(text):
 		return text
 	else:
 		import os
-		import urllib
 		abspath = os.path.abspath(text)
-		return 'file://%s' % urllib.quote(abspath)
+		return 'file://%s' % urllib_parse_quote(abspath)
 
 
 def digit_count(n):
@@ -219,7 +222,7 @@ def command_line():
 
 	args.repo_uri = ensure_uri(args.repo_uri)
 	if args.max_depth < 1:
-		args.max_depth = sys.maxint
+		args.max_depth = six.MAXSIZE
 
 	return args
 
