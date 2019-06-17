@@ -258,7 +258,7 @@ def main():
 	start_time = time.time()
 	sys.stderr.write('Analyzing %d revisions...\n' % latest_revision)
 	width = _get_terminal_size_or_default().columns
-	
+
 	def indicate_progress(rev, before_work=False):
 		percent = rev * 100.0 / latest_revision
 		seconds_taken = time.time() - start_time
@@ -270,7 +270,7 @@ def main():
 		sys.stderr.flush()
 
 	nick_stats = dict()
-	
+
 	for rev in xrange(1, latest_revision + 1):
 		if rev == 1 and args.show_progress:
 			indicate_progress(rev, before_work=True)
