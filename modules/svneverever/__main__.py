@@ -187,6 +187,7 @@ def make_progress_bar(percent, width, seconds_taken, seconds_expected):
 def command_line():
     from svneverever.version import VERSION_STR
     parser = argparse.ArgumentParser(
+            prog='svneverever',
             description='Collects path entries across SVN history',
             epilog=_EPILOG,
             formatter_class=argparse.RawDescriptionHelpFormatter,
