@@ -13,6 +13,7 @@ import time
 import fcntl
 import termios
 import struct
+from collections import namedtuple
 
 import six
 from six.moves import xrange
@@ -31,7 +32,10 @@ Please report bugs at https://github.com/hartwork/svneverever.  Thank you!
 """
 
 
-def get_terminal_width():
+_OsTerminalSize = namedtuple('_OsTerminalSize', ['columns', 'lines'])
+
+
+def _get_terminal_size_or_default():
 	try:
 		return int(os.environ['COLUMNS'])
 	except:
@@ -39,7 +43,7 @@ def get_terminal_width():
 
 	def query_fd(fd):
 		rows, cols, ph, pw = struct.unpack('HHHH', (fcntl.ioctl(fd, termios.TIOCGWINSZ, struct.pack('HHHH', 0, 0, 0, 0))))
-		return cols
+		return _OsTerminalSize(columns=cols, lines=rows)
 
 	for fd in (0, 1, 2):
 		try:
@@ -58,7 +62,7 @@ def get_terminal_width():
 	except:
 		pass
 
-	return 80
+	return _OsTerminalSize(columns=80, lines=24)
 
 
 def _encode(text):
@@ -242,7 +246,7 @@ def main():
 
 	start_time = time.time()
 	sys.stderr.write('Analyzing %d revisions...\n' % latest_revision)
-	width = get_terminal_width()
+	width = _get_terminal_size_or_default().columns
 	
 	def indicate_progress(rev, before_work=False):
 		percent = rev * 100.0 / latest_revision
