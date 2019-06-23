@@ -10,6 +10,7 @@ import math
 import os
 import sys
 import time
+import getpass
 from collections import namedtuple
 
 import pysvn
@@ -255,12 +256,17 @@ def command_line():
 
     return args
 
+def login(realm, username, may_save):
+    username = six.input("Please enter your username: ")
+    password = getpass.getpass()
+    return True, username, password, False
 
 def main():
     args = command_line()
 
     # Build tree from repo
     client = pysvn.Client()
+    client.callback_get_login = login
     tree = dict()
     try:
         latest_revision = client.info2(
