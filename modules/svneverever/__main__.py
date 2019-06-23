@@ -6,11 +6,11 @@
 #
 from __future__ import print_function
 
+import getpass
 import math
 import os
 import sys
 import time
-import getpass
 from collections import namedtuple
 
 import pysvn
@@ -207,6 +207,12 @@ def command_line():
         dest='nick_stat_mode', action='store_true', default=False,
         help='Collect committer names instead of path information '
              '(default: disabled)')
+    modes.add_argument(
+        '--non-interactive',
+        dest='non_interactive_mode', action='store_true', default=False,
+        help='Run in non-interactive mode'
+             ' will not offer to input login credentials if required'
+             ' (default: disabled)')
 
     common = parser.add_argument_group('common arguments')
     common.add_argument(
@@ -256,23 +262,34 @@ def command_line():
 
     return args
 
-def login(realm, username, may_save):
-    username = six.input("Please enter your username: ")
-    password = getpass.getpass()
-    return True, username, password, False
+
+def _login(realm, username, may_save):
+    try:
+        username = six.moves.input('Username: ')
+        password = getpass.getpass('Password: ')
+        return True, username, password, False
+    except (KeyboardInterrupt, EOFError):
+        sys.stdout.write('\nOperation cancelled.')
+        sys.exit(0)
+
 
 def main():
     args = command_line()
 
     # Build tree from repo
     client = pysvn.Client()
-    client.callback_get_login = login
+    if not args.non_interactive_mode:
+        client.callback_get_login = _login
     tree = dict()
     try:
         latest_revision = client.info2(
             args.repo_uri, recurse=False)[0][1]['last_changed_rev'].number
     except (pysvn.ClientError) as e:
-        sys.stderr.write('ERROR: %s\n' % str(e))
+        if str(e) == 'callback_get_login required':
+            sys.stderr.write('ERROR: SVN Repository requires login credentials'
+                             '. Please run without --non-interactive switch.')
+        else:
+            sys.stderr.write('ERROR: %s\n' % str(e))
         sys.exit(1)
 
     start_time = time.time()
