@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2010-2019 Sebastian Pipping <sebastian@pipping.org>
 # Copyright (C) 2011      Wouter Haffmans <wouter@boxplosive.nl>
+# Copyright (C) 2019      Kevin Lane <kevin.lane84@outlook.com>
 # Licensed under GPL v3 or later
 #
 from __future__ import print_function
