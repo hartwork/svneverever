@@ -2,10 +2,12 @@
 # -*- coding: utf-8 -*-
 # Copyright (C) 2010-2019 Sebastian Pipping <sebastian@pipping.org>
 # Copyright (C) 2011      Wouter Haffmans <wouter@boxplosive.nl>
+# Copyright (C) 2019      Kevin Lane <kevin.lane84@outlook.com>
 # Licensed under GPL v3 or later
 #
 from __future__ import print_function
 
+import getpass
 import math
 import os
 import sys
@@ -216,6 +218,11 @@ def command_line():
         '--no-progress',
         dest='show_progress', action='store_false', default=True,
         help='Hide progress bar (default: disabled)')
+    common.add_argument(
+        '--non-interactive',
+        dest='interactive', action='store_false', default=True,
+        help='Will not ask for input (e.g. login credentials) if required'
+             ' (default: ask if required)')
 
     path_tree_mode = parser.add_argument_group('path tree mode arguments')
     path_tree_mode.add_argument(
@@ -256,21 +263,64 @@ def command_line():
     return args
 
 
+def _login(realm, username, may_save, _tries):
+    if _tries > 0:
+        print('ERROR: Credentials not accepted by SVN, please try again.',
+              file=sys.stderr)
+
+    try:
+        if username:
+            print('Username: {}  (as requested by SVN)'.format(username),
+                  file=sys.stderr)
+        else:
+            print('Username: ', end='', file=sys.stderr)
+            username = six.moves.input('')
+        password = getpass.getpass('Password: ')
+        print(file=sys.stderr)
+        return True, username, password, False
+    except (KeyboardInterrupt, EOFError):
+        print(file=sys.stderr)
+        print('Operation cancelled.', file=sys.stderr)
+        sys.exit(0)
+
+
+def _create_login_callback():
+    tries = 0
+
+    def login_with_try_counter(*args, **kvargs):
+        nonlocal tries
+
+        kvargs['_tries'] = tries
+        try:
+            return _login(*args, **kvargs)
+        finally:
+            tries += 1
+
+    return login_with_try_counter
+
+
 def main():
     args = command_line()
 
     # Build tree from repo
     client = pysvn.Client()
+    if args.interactive:
+        client.callback_get_login = _create_login_callback()
     tree = dict()
     try:
         latest_revision = client.info2(
             args.repo_uri, recurse=False)[0][1]['last_changed_rev'].number
     except (pysvn.ClientError) as e:
-        sys.stderr.write('ERROR: %s\n' % str(e))
+        if str(e) == 'callback_get_login required':
+            print('ERROR: SVN Repository requires login credentials'
+                  '. Please run without --non-interactive switch.',
+                  file=sys.stderr)
+        else:
+            print('ERROR: %s' % str(e), file=sys.stderr)
         sys.exit(1)
 
     start_time = time.time()
-    sys.stderr.write('Analyzing %d revisions...\n' % latest_revision)
+    print('Analyzing %d revisions...' % latest_revision, file=sys.stderr)
     width = _get_terminal_size_or_default().columns
 
     def indicate_progress(rev, before_work=False):
@@ -280,9 +330,9 @@ def main():
         if (rev == latest_revision) and not before_work:
             percent = 100
             seconds_expected = seconds_taken
-        sys.stderr.write('\r' + make_progress_bar(percent, width,
-                                                  seconds_taken,
-                                                  seconds_expected))
+        print('\r' + make_progress_bar(percent, width,
+                                       seconds_taken, seconds_expected),
+              end='', file=sys.stderr)
         sys.stderr.flush()
 
     nick_stats = dict()
@@ -370,9 +420,8 @@ def main():
             indicate_progress(rev)
 
     if args.show_progress:
-        sys.stderr.write('\n\n')
-    else:
-        sys.stderr.write('\n')
+        print(file=sys.stderr)
+    print(file=sys.stderr)
     sys.stderr.flush()
 
     # NOTE: Leaves are files and empty directories
