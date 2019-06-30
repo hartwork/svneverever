@@ -265,8 +265,8 @@ def command_line():
 
 def _login(realm, username, may_save, _tries):
     if _tries > 0:
-        sys.stderr.write('ERROR: Credentials not accepted by SVN, '
-                         'please try again.\n')
+        print('ERROR: Credentials not accepted by SVN, please try again.',
+              file=sys.stderr)
 
     try:
         if username:
@@ -276,7 +276,7 @@ def _login(realm, username, may_save, _tries):
             print('Username: ', end='', file=sys.stderr)
             username = six.moves.input('')
         password = getpass.getpass('Password: ')
-        sys.stderr.write('\n')
+        print(file=sys.stderr)
         return True, username, password, False
     except (KeyboardInterrupt, EOFError):
         print(file=sys.stderr)
@@ -312,14 +312,15 @@ def main():
             args.repo_uri, recurse=False)[0][1]['last_changed_rev'].number
     except (pysvn.ClientError) as e:
         if str(e) == 'callback_get_login required':
-            sys.stderr.write('ERROR: SVN Repository requires login credentials'
-                             '. Please run without --non-interactive switch.')
+            print('ERROR: SVN Repository requires login credentials'
+                  '. Please run without --non-interactive switch.',
+                  file=sys.stderr)
         else:
-            sys.stderr.write('ERROR: %s\n' % str(e))
+            print('ERROR: %s' % str(e), file=sys.stderr)
         sys.exit(1)
 
     start_time = time.time()
-    sys.stderr.write('Analyzing %d revisions...\n' % latest_revision)
+    print('Analyzing %d revisions...' % latest_revision, file=sys.stderr)
     width = _get_terminal_size_or_default().columns
 
     def indicate_progress(rev, before_work=False):
@@ -329,9 +330,9 @@ def main():
         if (rev == latest_revision) and not before_work:
             percent = 100
             seconds_expected = seconds_taken
-        sys.stderr.write('\r' + make_progress_bar(percent, width,
-                                                  seconds_taken,
-                                                  seconds_expected))
+        print('\r' + make_progress_bar(percent, width,
+                                       seconds_taken, seconds_expected),
+              end='', file=sys.stderr)
         sys.stderr.flush()
 
     nick_stats = dict()
@@ -419,9 +420,8 @@ def main():
             indicate_progress(rev)
 
     if args.show_progress:
-        sys.stderr.write('\n\n')
-    else:
-        sys.stderr.write('\n')
+        print(file=sys.stderr)
+    print(file=sys.stderr)
     sys.stderr.flush()
 
     # NOTE: Leaves are files and empty directories
