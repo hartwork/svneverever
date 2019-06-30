@@ -209,7 +209,7 @@ def command_line():
              '(default: disabled)')
     modes.add_argument(
         '--non-interactive',
-        dest='non_interactive_mode', action='store_true', default=False,
+        dest='interactive', action='store_false', default=True,
         help='Run in non-interactive mode'
              ' will not offer to input login credentials if required'
              ' (default: disabled)')
@@ -304,7 +304,7 @@ def main():
 
     # Build tree from repo
     client = pysvn.Client()
-    if not args.non_interactive_mode:
+    if args.interactive:
         client.callback_get_login = _create_login_callback()
     tree = dict()
     try:
