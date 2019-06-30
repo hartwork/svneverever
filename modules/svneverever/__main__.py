@@ -270,6 +270,7 @@ def _login(realm, username, may_save):
         else:
             username = six.moves.input('Username: ')
         password = getpass.getpass('Password: ')
+        sys.stderr.write('\n')
         return True, username, password, False
     except (KeyboardInterrupt, EOFError):
         sys.stdout.write('\nOperation cancelled.')
