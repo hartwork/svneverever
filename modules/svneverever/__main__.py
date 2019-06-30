@@ -279,7 +279,8 @@ def _login(realm, username, may_save, _tries):
         sys.stderr.write('\n')
         return True, username, password, False
     except (KeyboardInterrupt, EOFError):
-        sys.stdout.write('\nOperation cancelled.')
+        print(file=sys.stderr)
+        print('Operation cancelled.', file=sys.stderr)
         sys.exit(0)
 
 
