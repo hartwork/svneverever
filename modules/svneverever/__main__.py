@@ -270,9 +270,11 @@ def _login(realm, username, may_save, _tries):
 
     try:
         if username:
-            print('Username: {}  (as requested by SVN)'.format(username))
+            print('Username: {}  (as requested by SVN)'.format(username),
+                  file=sys.stderr)
         else:
-            username = six.moves.input('Username: ')
+            print('Username: ', end='', file=sys.stderr)
+            username = six.moves.input('')
         password = getpass.getpass('Password: ')
         sys.stderr.write('\n')
         return True, username, password, False
