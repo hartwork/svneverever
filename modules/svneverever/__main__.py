@@ -210,9 +210,8 @@ def command_line():
     modes.add_argument(
         '--non-interactive',
         dest='interactive', action='store_false', default=True,
-        help='Run in non-interactive mode'
-             ' will not offer to input login credentials if required'
-             ' (default: disabled)')
+        help='Will not ask for input (e.g. login credentials) if required'
+             ' (default: ask if required)')
 
     common = parser.add_argument_group('common arguments')
     common.add_argument(
