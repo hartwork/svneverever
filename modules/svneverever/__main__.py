@@ -10,6 +10,7 @@ from __future__ import print_function
 import getpass
 import math
 import os
+import signal
 import sys
 import time
 from collections import namedtuple
@@ -281,7 +282,7 @@ def _login(realm, username, may_save, _tries):
     except (KeyboardInterrupt, EOFError):
         print(file=sys.stderr)
         print('Operation cancelled.', file=sys.stderr)
-        sys.exit(0)
+        sys.exit(128 + signal.SIGINT)
 
 
 def _create_login_callback():
