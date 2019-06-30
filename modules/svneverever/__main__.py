@@ -265,7 +265,10 @@ def command_line():
 
 def _login(realm, username, may_save):
     try:
-        username = six.moves.input('Username: ')
+        if username:
+            print('Username: {}  (as requested by SVN)'.format(username))
+        else:
+            username = six.moves.input('Username: ')
         password = getpass.getpass('Password: ')
         return True, username, password, False
     except (KeyboardInterrupt, EOFError):
