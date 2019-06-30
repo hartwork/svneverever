@@ -137,8 +137,9 @@ Usage
 -----------------------------------------------------------------------------
 # svneverever --help
 usage: svneverever [-h] [--version] [--committers] [--no-numbers]
-                   [--no-progress] [--tags] [--branches] [--no-dots]
-                   [--depth DEPTH] [--flatten] [--unknown-committer NAME]
+                   [--no-progress] [--non-interactive] [--tags] [--branches]
+                   [--no-dots] [--depth DEPTH] [--flatten]
+                   [--unknown-committer NAME]
                    REPOSITORY
 
 Collects path entries across SVN history
@@ -157,6 +158,8 @@ mode selection arguments:
 common arguments:
   --no-numbers          Hide numbers, e.g. revision ranges (default: disabled)
   --no-progress         Hide progress bar (default: disabled)
+  --non-interactive     Will not ask for input (e.g. login credentials) if
+                        required (default: ask if required)
 
 path tree mode arguments:
   --tags                Show content of tag folders (default: disabled)
