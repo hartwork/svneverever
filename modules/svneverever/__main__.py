@@ -207,11 +207,6 @@ def command_line():
         dest='nick_stat_mode', action='store_true', default=False,
         help='Collect committer names instead of path information '
              '(default: disabled)')
-    modes.add_argument(
-        '--non-interactive',
-        dest='interactive', action='store_false', default=True,
-        help='Will not ask for input (e.g. login credentials) if required'
-             ' (default: ask if required)')
 
     common = parser.add_argument_group('common arguments')
     common.add_argument(
@@ -222,6 +217,11 @@ def command_line():
         '--no-progress',
         dest='show_progress', action='store_false', default=True,
         help='Hide progress bar (default: disabled)')
+    common.add_argument(
+        '--non-interactive',
+        dest='interactive', action='store_false', default=True,
+        help='Will not ask for input (e.g. login credentials) if required'
+             ' (default: ask if required)')
 
     path_tree_mode = parser.add_argument_group('path tree mode arguments')
     path_tree_mode.add_argument(
