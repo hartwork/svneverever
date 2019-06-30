@@ -263,7 +263,11 @@ def command_line():
     return args
 
 
-def _login(realm, username, may_save):
+def _login(realm, username, may_save, _tries):
+    if _tries > 0:
+        sys.stderr.write('ERROR: Credentials not accepted by SVN, '
+                         'please try again.\n')
+
     try:
         if username:
             print('Username: {}  (as requested by SVN)'.format(username))
@@ -277,13 +281,28 @@ def _login(realm, username, may_save):
         sys.exit(0)
 
 
+def _create_login_callback():
+    tries = 0
+
+    def login_with_try_counter(*args, **kvargs):
+        nonlocal tries
+
+        kvargs['_tries'] = tries
+        try:
+            return _login(*args, **kvargs)
+        finally:
+            tries += 1
+
+    return login_with_try_counter
+
+
 def main():
     args = command_line()
 
     # Build tree from repo
     client = pysvn.Client()
     if not args.non_interactive_mode:
-        client.callback_get_login = _login
+        client.callback_get_login = _create_login_callback()
     tree = dict()
     try:
         latest_revision = client.info2(
