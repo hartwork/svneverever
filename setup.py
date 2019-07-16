@@ -20,7 +20,7 @@ setup(
     packages=['svneverever', ],
     entry_points={
         'console_scripts': [
-            'svneverever = svneverever.main:main',
+            'svneverever = svneverever.__main__:main',
         ],
     },
     install_requires=[
