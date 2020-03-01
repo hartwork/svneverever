@@ -2,10 +2,10 @@
 # Copyright (C) 2010-2019 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GPL v3 or later
 
-from setuptools import setup
+from setuptools import find_packages, setup
 
 import sys
-sys.path.insert(0, 'modules')
+sys.path.insert(0, '.')
 from svneverever.version import VERSION_STR  # noqa: E402
 
 setup(
@@ -18,8 +18,7 @@ setup(
     url='https://github.com/hartwork/svneverever',
     author='Sebastian Pipping',
     author_email='sebastian@pipping.org',
-    package_dir={'': 'modules', },
-    packages=['svneverever', ],
+    packages=find_packages(),
     entry_points={
         'console_scripts': [
             'svneverever = svneverever.__main__:main',
