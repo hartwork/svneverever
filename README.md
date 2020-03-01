@@ -1,21 +1,21 @@
-About
------
-*svneverever* helps you inspect the structure of a SVN repository
+# About
+
+**svneverever** helps you inspect the structure of a SVN repository
 and the changes made to it over time.
 Its most common use probably is in combination with
-https://github.com/svn-all-fast-export/svn2git[svn-all-fast-export]
+[svn-all-fast-export](https://github.com/svn-all-fast-export/svn2git)
 (or "KDE's svn2git" if you wish).
 
 
-Example
--------
-In the following shell session I am first dumping the SVN history of
-http://bs2b.sourceforge.net/[headphone effect library bs2b]
-using http://rsvndump.sourceforge.net/[rsvndump].
-(I could pass `svn://svn.code.sf.net/p/bs2b/code/` to *svneverever* directly
-but it would mean to download all history for each run to *svneverever*.)
+# Example
 
------------------------------------------------------------------------------------------
+In the following shell session I am first dumping the SVN history of
+[headphone effect library bs2b](http://bs2b.sourceforge.net/)
+using [rsvndump](http://rsvndump.sourceforge.net/).
+(I could pass `svn://svn.code.sf.net/p/bs2b/code/` to **svneverever** directly
+but it would mean to download all history for each run to **svneverever**.)
+
+```console
 # svnadmin create bs2b_svn_store
 
 # time sh -c 'rsvndump svn://svn.code.sf.net/p/bs2b/code/ | svnadmin load bs2b_svn_store/'
@@ -23,12 +23,12 @@ but it would mean to download all history for each run to *svneverever*.)
 real    2m54.403s
 user    0m1.003s
 sys     0m1.300s
------------------------------------------------------------------------------------------
+```
 
-After dumping the SVN history, I make *svneverever* show a tree of
+After dumping the SVN history, I make **svneverever** show a tree of
 all directories in there ever ever.
 
------------------------------------------------------------------------------------------
+```console
 # svneverever --no-progress bs2b_svn_store/
 Analyzing 175 revisions...
 
@@ -75,7 +75,7 @@ Analyzing 175 revisions...
 (  2; 175)          /xmms
 ( 12; 175)              /m4
 ( 12; 175)              /src
------------------------------------------------------------------------------------------
+```
 
 The ranges on the left indicate
 at what revision folders appeared first and got deleted latest.
@@ -91,50 +91,52 @@ You can see a few things in this very output:
 
 Let's see if that tag was _actually_ moved into that tag subfolder.  Yes it was:
 
------------------------------------------------------------------------------------------
+```console
 # svneverever --no-progress --tags --flatten bs2b_svn_store/ | grep '2.2.1$'
 Analyzing 175 revisions...
 
 (110; 175)  /tags/description/2.2.1
 ( 47; 175)  /tags/libbs2b/2.2.1
 ( 28;  46)  /tags/libbs2b-2.2.1
------------------------------------------------------------------------------------------
+```
 
 Next I have a look at who the committers where, when they joined or left
 and how many commits the did (though that last number is of limited value).
 
------------------------------------------------------------------------------------------
+```console
 # svneverever --no-progress --committers bs2b_svn_store/
 Analyzing 175 revisions...
 
  81 (  1; 174)  boris_mikhaylov
  94 (  4; 175)  hartwork
------------------------------------------------------------------------------------------
+```
 
 
-Installation
-------------
-If your Linux distribution of choice does not come with a package for *svneverever* yet,
-you can install *svneverever* using pip from PyPI
------------------------------------------------------------------------------
+# Installation
+
+If your Linux distribution of choice does not come with a package for **svneverever** yet,
+you can install **svneverever** using pip from PyPI
+
+```console
 # pip install svneverever
------------------------------------------------------------------------------
+```
 
 or from a Git clone:
------------------------------------------------------------------------------
+
+```console
 # git clone https://github.com/hartwork/svneverever.git
 # cd svneverever
 # python setup.py install --user
 # echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.bashrc
------------------------------------------------------------------------------
+```
 
-Besides Python 2.7/3.5/3.6, *svneverever*'s only dependency is
-http://pysvn.tigris.org/project_downloads.html[pysvn].
+Besides Python 2.7/3.5/3.6, **svneverever**'s only dependency is
+[pysvn](http://pysvn.tigris.org/project_downloads.html).
 
 
-Usage
------
------------------------------------------------------------------------------
+# Usage
+
+```console
 # svneverever --help
 usage: svneverever [-h] [--version] [--committers] [--no-numbers]
                    [--no-progress] [--non-interactive] [--tags] [--branches]
@@ -174,4 +176,4 @@ committer mode arguments:
                         svn:author property (default: "<unknown>")
 
 Please report bugs at https://github.com/hartwork/svneverever.  Thank you!
------------------------------------------------------------------------------
+```
