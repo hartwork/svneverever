@@ -11,6 +11,8 @@ from svneverever.version import VERSION_STR  # noqa: E402
 setup(
     name='svneverever',
     description='Tool collecting path entries across SVN history',
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     license='GPL v3 or later',
     version=VERSION_STR,
     url='https://github.com/hartwork/svneverever',
@@ -23,6 +25,9 @@ setup(
             'svneverever = svneverever.__main__:main',
         ],
     },
+    setup_requires=[
+        'setuptools>=38.6.0',  # for long_description_content_type
+    ],
     install_requires=[
         'six',
     ],
