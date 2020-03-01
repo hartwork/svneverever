@@ -131,7 +131,7 @@ or from a Git clone:
 ```
 
 Besides Python 2.7/3.5/3.6, **svneverever**'s only dependency is
-[pysvn](http://pysvn.tigris.org/project_downloads.html).
+[pysvn](https://pysvn.sourceforge.io/).
 
 
 # Usage
