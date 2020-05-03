@@ -126,11 +126,11 @@ or from a Git clone:
 ```console
 # git clone https://github.com/hartwork/svneverever.git
 # cd svneverever
-# python setup.py install --user
+# python3 setup.py install --user
 # echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.bashrc
 ```
 
-Besides Python 2.7/3.5/3.6, **svneverever**'s only dependency is
+Besides Python 3.5/3.6, **svneverever**'s only dependency is
 [pysvn](https://pysvn.sourceforge.io/).
 
 
