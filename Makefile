@@ -2,7 +2,7 @@
 # Licensed under GPL v3 or later
 
 DESTDIR = /
-PYTHON = python
+PYTHON = python3
 
 all:
 
