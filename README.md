@@ -1,25 +1,26 @@
-# About #
+# About
 **svneverever** helps you inspect the structure of a SVN repository and the changes made to it over time. Its most common use is in combination with [svn-all-fast-export](https://github.com/svn-all-fast-export/svn2git) (or "KDE's svn2git" if you wish).
 
-# Installation #
 
-## Dependencies ##
-**svneverever** requires python 3.5 or higher and [pysvn](https://pysvn.sourceforge.io/). If you want to install **svneverever** with **pip** you need a few additional packages. For Debian/Ubuntu the following should work
+# Installation
 
-```bash
-sudo apt install python3-setuptools python3-pip python3-svn
+## Dependencies
+**svneverever** requires python 3.5 or higher and [pysvn](https://pysvn.sourceforge.io/). If you want to install **svneverever** with **pip** you need a few additional packages. For Debian/Ubuntu the following should work:
+
+```console
+# sudo apt install python3-svn python3-pip
 ```
 
-## Package manager ##
-Gentoo and Funtoo offer [a package](https://repology.org/project/svneverever/versions) for **svneverever**.
+## System package manager
+Gentoo, Funtoo, AUR and OpenSUSE offer a package [1](https://repology.org/project/svneverever/versions) [2](https://repology.org/project/python:svneverever/versions) for **svneverever**.
 
-## Pip ##
+## pip
 Install with pip as user to avoid messes with python system files.
 ```console
 # pip install --user svneverever
 ```
 
-## From source ##
+## From source
 ```console
 # git clone https://github.com/hartwork/svneverever.git
 # cd svneverever
@@ -27,7 +28,7 @@ Install with pip as user to avoid messes with python system files.
 # echo 'export PATH="${HOME}/.local/bin:${PATH}"' >> ~/.bashrc
 ```
 
-# Usage #
+# Usage
 **svneverever** needs the "server-side" of the repository with full history. There are two ways to obtain this. Let's take the SVN history of [headphone effect library bs2b](http://bs2b.sourceforge.net/) as an example. The first way is to directly point **svneverever** to the server `svneverever svn://svn.code.sf.net/p/bs2b/code/`. However this is slow and it puts a lot of stress on the server. The second, and recommended, method is first downloading the history with **rsvndump**. For this method we first need to use `svnadmin` to create an empty repository and then load the output of **rsvndump** into it. This can be done in the following way:
 
 ```console
@@ -40,13 +41,13 @@ user    0m1.003s
 sys     0m1.300s
 ```
 
-The output can now be obtained by pointing **svneverver** to the svn directory.
+The output can now be obtained by pointing **svneverver** to the svn store directory `bs2b_svn_store`.
 
 ```console
 # svneverever --no-progress bs2b_svn_store/
 ```
 
-## Analyzing the output ##
+## Analyzing the output
 The output of the direct method or the **rsvndump** method will be the same and looks like this:
 
 ```console
@@ -100,9 +101,9 @@ Analyzing 175 revisions...
 The ranges on the left indicate at what revision folders appeared first and got deleted latest.
 
 You can see a few things in this output:
-* That a branch called "libbs2b-config-header" got deleted at revision 76.
+* That a branch called `libbs2b-config-header` got deleted at revision 76.
 * In which order plug-ins in `plugins` appeared over time.
-* That tag "libbs2b-2.2.1" was deleted at the same revision that a tag folder "libbs2b" appeared.
+* That tag `libbs2b-2.2.1` was deleted at the same revision that a tag folder `libbs2b` appeared.
 
 The last item we can verify to see if it was _actually_ moved into that tag subfolder.
 
@@ -115,7 +116,7 @@ Analyzing 175 revisions...
 ( 28;  46)  /tags/libbs2b-2.2.1
 ```
 
-Next I have a look at who the committers where, when they joined or left and how many commits the did (though that last number is of limited value).
+Next I have a look at who the committers where, when they joined or left and how many commits the did (though that last number is of limited value). This can help to write an identify map for svn2git.
 
 ```console
 # svneverever --no-progress --committers bs2b_svn_store/
@@ -125,8 +126,7 @@ Analyzing 175 revisions...
  94 (  4; 175)  hartwork
 ```
 
-# Help #
-
+# --help output
 ```console
 # svneverever --help
 usage: svneverever [-h] [--version] [--committers] [--no-numbers]
