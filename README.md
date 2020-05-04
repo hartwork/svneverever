@@ -33,7 +33,11 @@ Install with pip as user to avoid messes with python system files.
 ```
 
 # Usage
-**svneverever** needs the "server-side" of the repository with full history. There are two ways to obtain this. Let's take the SVN history of [headphone effect library bs2b](http://bs2b.sourceforge.net/) as an example. The first way is to directly point **svneverever** to the server `svneverever svn://svn.code.sf.net/p/bs2b/code/`. However this is slow and it puts a lot of stress on the server. The second, and recommended, method is first downloading the history with **rsvndump**. For this method we first need to use `svnadmin` to create an empty repository and then load the output of **rsvndump** into it. This can be done in the following way:
+**svneverever** needs the "server-side" of the repository with full history. There are two ways to obtain this. Let's take the SVN history of [headphone effect library bs2b](http://bs2b.sourceforge.net/) as an example.
+
+The first way is to directly point **svneverever** to the server `svneverever svn://svn.code.sf.net/p/bs2b/code/`. However this is slow and it puts a lot of stress on the server.
+
+The second, and recommended, method is first downloading the history with **rsvndump**. For this method we first need to use `svnadmin` to create an empty repository and then load the output of **rsvndump** into it. This can be done in the following way:
 
 ```console
 # svnadmin create bs2b_svn_store
