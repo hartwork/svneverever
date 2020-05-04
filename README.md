@@ -134,7 +134,7 @@ Analyzing 175 revisions...
  94 (  4; 175)  hartwork
 ```
 
-# --help output
+# `--help` output
 ```console
 # svneverever --help
 usage: svneverever [-h] [--version] [--committers] [--no-numbers]
