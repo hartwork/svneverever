@@ -116,7 +116,7 @@ Analyzing 175 revisions...
 ( 28;  46)  /tags/libbs2b-2.2.1
 ```
 
-Next I have a look at who the committers where, when they joined or left and how many commits the did (though that last number is of limited value). This can help to write an identify map for svn2git.
+Next I have a look at who the committers where, when they joined or left and how many commits the did (though that last number is of limited value). This can help to write an identity map for svn2git.
 
 ```console
 # svneverever --no-progress --committers bs2b_svn_store/
