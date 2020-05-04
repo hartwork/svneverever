@@ -12,7 +12,11 @@
 ```
 
 ## System package manager
-Gentoo, Funtoo, AUR and OpenSUSE offer a package [1](https://repology.org/project/svneverever/versions) [2](https://repology.org/project/python:svneverever/versions) for **svneverever**.
+[Some distributions](https://repology.org/projects/?search=svneverever) offer a native package for **svneverever**:
+- [Arch AUR](https://aur.archlinux.org/packages/python-svneverever/)
+- [Funtoo](https://github.com/funtoo/dev-kit/tree/1.4-release/dev-vcs/svneverever)
+- [Gentoo](https://packages.gentoo.org/packages/dev-vcs/svneverever)
+- [openSUSE](https://software.opensuse.org/package/python-svneverever)
 
 ## pip
 Install with pip as user to avoid messes with python system files.
