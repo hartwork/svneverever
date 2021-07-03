@@ -29,28 +29,13 @@ Please report bugs at https://github.com/hartwork/svneverever.  Thank you!
 _OsTerminalSize = namedtuple('_OsTerminalSize', ['columns', 'lines'])
 
 
-def _os_get_terminal_size_pre_3_3(fd=0):
-    import fcntl
-    import struct
-    import termios
-
-    lines, columns, _ph, _pw = struct.unpack('HHHH', (
-        fcntl.ioctl(fd, termios.TIOCGWINSZ, struct.pack('HHHH', 0, 0, 0, 0))))
-
-    return _OsTerminalSize(columns=columns, lines=lines)
-
-
 def _get_terminal_size_or_default():
     try:
         return int(os.environ['COLUMNS'])
     except (KeyError, ValueError):
         pass
 
-    if sys.version_info >= (3, 3):
-        query_fd = os.get_terminal_size
-    else:
-        query_fd = _os_get_terminal_size_pre_3_3
-
+    query_fd = os.get_terminal_size
     for fd in (0, 1, 2):
         try:
             return query_fd(fd)
