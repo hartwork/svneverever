@@ -15,6 +15,7 @@ import signal
 import sys
 import time
 from collections import namedtuple
+from textwrap import dedent
 from urllib.parse import quote as urllib_parse_quote
 
 import pysvn
@@ -275,8 +276,19 @@ def _create_login_callback():
     return login_with_try_counter
 
 
+def _check_for_suitable_pysvn():
+    if not hasattr(pysvn, 'ClientError'):
+        print(dedent("""\
+            ERROR: You need pysvn 1.x.x off SourceForge (https://pysvn.sourceforge.io/).
+                   Package "pysvn" on PyPI is something else, unfortunately.
+        """), file=sys.stderr)  # noqa: E501
+        sys.exit(1)
+
+
 def main():
     args = command_line()
+
+    _check_for_suitable_pysvn()
 
     # Build tree from repo
     client = pysvn.Client()

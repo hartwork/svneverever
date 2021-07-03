@@ -29,6 +29,8 @@ setup(
         'setuptools>=38.6.0',  # for long_description_content_type
     ],
     install_requires=[
+        # Package 'pysvn' on PyPI is not the pysvn off SourceForge
+        # that we need!
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
