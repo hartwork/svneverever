@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# Copyright (C) 2010-2019 Sebastian Pipping <sebastian@pipping.org>
+# Copyright (C) 2010-2021 Sebastian Pipping <sebastian@pipping.org>
 # Copyright (C) 2011      Wouter Haffmans <wouter@boxplosive.nl>
 # Copyright (C) 2019      Kevin Lane <kevin.lane84@outlook.com>
 # Licensed under GPL v3 or later
 #
 from __future__ import print_function
 
+import argparse
 import getpass
 import math
 import os
@@ -19,15 +20,6 @@ import pysvn
 import six
 from six.moves import xrange
 from six.moves.urllib.parse import quote as urllib_parse_quote
-
-try:
-    import argparse
-except ImportError:
-    print("ERROR: You need Python 2.7+ unless you have module argparse "
-          "(package dev-python/argparse on Gentoo) installed independently.",
-          file=sys.stderr)
-    sys.exit(1)
-
 
 _EPILOG = """\
 Please report bugs at https://github.com/hartwork/svneverever.  Thank you!
