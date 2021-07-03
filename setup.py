@@ -29,7 +29,7 @@ setup(
         'setuptools>=38.6.0',  # for long_description_content_type
     ],
     install_requires=[
-        # Package 'pysvn' on PyPI is not the pysvn off SourceForge
+        # Package 'pysvn' on PyPI is not the PySVN off SourceForge
         # that we need!
     ],
     classifiers=[

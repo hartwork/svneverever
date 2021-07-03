@@ -279,7 +279,7 @@ def _create_login_callback():
 def _check_for_suitable_pysvn():
     if not hasattr(pysvn, 'ClientError'):
         print(dedent("""\
-            ERROR: You need pysvn 1.x.x off SourceForge (https://pysvn.sourceforge.io/).
+            ERROR: You need PySVN 1.x.x off SourceForge (https://pysvn.sourceforge.io/).
                    Package "pysvn" on PyPI is something else, unfortunately.
         """), file=sys.stderr)  # noqa: E501
         sys.exit(1)

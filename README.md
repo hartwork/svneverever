@@ -5,8 +5,8 @@
 # Installation
 
 ## Dependencies
-**svneverever** requires python 3.6 or higher
-and [pysvn](https://pysvn.sourceforge.io/)
+**svneverever** requires Python 3.6 or higher
+and [PySVN](https://pysvn.sourceforge.io/)
 (the one on SourceForge, not the one on PyPI).
 If you want to install **svneverever** with **pip** you need a few additional packages.
 For Debian/Ubuntu the following should work:
@@ -23,7 +23,7 @@ For Debian/Ubuntu the following should work:
 - [openSUSE](https://software.opensuse.org/package/python-svneverever)
 
 ## pip
-Install with pip as user to avoid messes with python system files.
+Install with pip as user to avoid messes with Python system files.
 ```console
 # pip install --user svneverever
 ```
