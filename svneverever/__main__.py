@@ -15,11 +15,9 @@ import signal
 import sys
 import time
 from collections import namedtuple
+from urllib.parse import quote as urllib_parse_quote
 
 import pysvn
-import six
-from six.moves import xrange
-from six.moves.urllib.parse import quote as urllib_parse_quote
 
 _EPILOG = """\
 Please report bugs at https://github.com/hartwork/svneverever.  Thank you!
@@ -236,7 +234,7 @@ def command_line():
 
     args.repo_uri = ensure_uri(args.repo_uri)
     if args.max_depth < 1:
-        args.max_depth = six.MAXSIZE
+        args.max_depth = sys.maxsize
 
     return args
 
@@ -252,7 +250,7 @@ def _login(realm, username, may_save, _tries):
                   file=sys.stderr)
         else:
             print('Username: ', end='', file=sys.stderr)
-            username = six.moves.input('')
+            username = input('')
         password = getpass.getpass('Password: ')
         print(file=sys.stderr)
         return True, username, password, False
@@ -315,7 +313,7 @@ def main():
 
     nick_stats = dict()
 
-    for rev in xrange(1, latest_revision + 1):
+    for rev in range(1, latest_revision + 1):
         if rev == 1 and args.show_progress:
             indicate_progress(rev, before_work=True)
 

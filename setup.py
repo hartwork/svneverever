@@ -29,7 +29,6 @@ setup(
         'setuptools>=38.6.0',  # for long_description_content_type
     ],
     install_requires=[
-        'six',
     ],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
