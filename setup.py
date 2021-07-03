@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (C) 2010-2019 Sebastian Pipping <sebastian@pipping.org>
+# Copyright (C) 2010-2021 Sebastian Pipping <sebastian@pipping.org>
 # Licensed under GPL v3 or later
 
 from setuptools import find_packages, setup
@@ -24,6 +24,7 @@ setup(
             'svneverever = svneverever.__main__:main',
         ],
     },
+    python_requires='>=3.6',
     setup_requires=[
         'setuptools>=38.6.0',  # for long_description_content_type
     ],
@@ -40,7 +41,6 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',

@@ -5,7 +5,7 @@
 # Installation
 
 ## Dependencies
-**svneverever** requires python 3.5 or higher and [pysvn](https://pysvn.sourceforge.io/). If you want to install **svneverever** with **pip** you need a few additional packages. For Debian/Ubuntu the following should work:
+**svneverever** requires python 3.6 or higher and [pysvn](https://pysvn.sourceforge.io/). If you want to install **svneverever** with **pip** you need a few additional packages. For Debian/Ubuntu the following should work:
 
 ```console
 # sudo apt install python3-svn python3-pip
