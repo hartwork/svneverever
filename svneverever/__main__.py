@@ -11,6 +11,7 @@ import argparse
 import getpass
 import math
 import os
+import re
 import signal
 import sys
 import time
@@ -19,6 +20,8 @@ from textwrap import dedent
 from urllib.parse import quote as urllib_parse_quote
 
 import pysvn
+
+from .version import VERSION_STR
 
 _EPILOG = """\
 Please report bugs at https://github.com/hartwork/svneverever.  Thank you!
@@ -122,12 +125,10 @@ def dump_nick_stats(nick_stats, revision_digits, config):
 
 
 def ensure_uri(text):
-    import re
     svn_uri_detector = re.compile('^[A-Za-z+]+://')
     if svn_uri_detector.search(text):
         return text
     else:
-        import os
         abspath = os.path.abspath(text)
         return 'file://%s' % urllib_parse_quote(abspath)
 
@@ -164,7 +165,6 @@ def make_progress_bar(percent, width, seconds_taken, seconds_expected):
 
 
 def command_line():
-    from svneverever.version import VERSION_STR
     parser = argparse.ArgumentParser(
             prog='svneverever',
             description='Collects path entries across SVN history',
