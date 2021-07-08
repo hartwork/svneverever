@@ -233,7 +233,6 @@ def command_line():
 
     args = parser.parse_args()
 
-    args.repo_uri = ensure_uri(args.repo_uri)
     if args.max_depth < 1:
         args.max_depth = sys.maxsize
 
@@ -289,6 +288,8 @@ def main():
     args = command_line()
 
     _check_for_suitable_pysvn()
+
+    args.repo_uri = ensure_uri(args.repo_uri)
 
     # Build tree from repo
     client = pysvn.Client()
