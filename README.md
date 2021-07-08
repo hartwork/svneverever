@@ -2,6 +2,15 @@
 **svneverever** helps you inspect the structure of a SVN repository and the changes made to it over time. Its most common use is in combination with [svn-all-fast-export](https://github.com/svn-all-fast-export/svn2git) (or "KDE's svn2git" if you wish).
 
 
+# Running as Docker image
+
+Just build the docker image and run it via docker. 
+
+```
+docker build -t svneverever .
+docker run --rm -it svneverever svneverever --version 
+```
+
 # Installation
 
 ## Dependencies
