@@ -31,6 +31,16 @@ Please report bugs at https://github.com/hartwork/svneverever.  Thank you!
 _OsTerminalSize = namedtuple('_OsTerminalSize', ['columns', 'lines'])
 
 
+class _SvnCheckoutDetected(ValueError):
+    def __init__(self, repo_location):
+        self._repo_location = repo_location
+
+    def __str__(self):
+        return (f'Directory {self._repo_location!r}'
+                ' does not contain an SVN repository'
+                ' but an SVN checkout.')
+
+
 def _get_terminal_size_or_default():
     try:
         return int(os.environ['COLUMNS'])
@@ -130,6 +140,8 @@ def ensure_uri(text):
         return text
     else:
         abspath = os.path.abspath(text)
+        if os.path.exists(os.path.join(abspath, '.svn')):
+            raise _SvnCheckoutDetected(abspath)
         return 'file://%s' % urllib_parse_quote(abspath)
 
 
@@ -289,7 +301,11 @@ def main():
 
     _check_for_suitable_pysvn()
 
-    args.repo_uri = ensure_uri(args.repo_uri)
+    try:
+        args.repo_uri = ensure_uri(args.repo_uri)
+    except _SvnCheckoutDetected as e:
+        print('ERROR: %s' % str(e), file=sys.stderr)
+        sys.exit(3)
 
     # Build tree from repo
     client = pysvn.Client()
