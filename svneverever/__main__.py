@@ -281,7 +281,7 @@ def _check_for_suitable_pysvn():
             ERROR: You need PySVN 1.x.x off SourceForge (https://pysvn.sourceforge.io/).
                    Package "pysvn" on PyPI is something else, unfortunately.
         """), file=sys.stderr)  # noqa: E501
-        sys.exit(1)
+        sys.exit(2)
 
 
 def main():
