@@ -5,12 +5,12 @@ repos:
       - id: flake8
 
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.19.4
+    rev: v2.31.0
     hooks:
       - id: pyupgrade
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v2.5.0
+    rev: v4.1.0
     hooks:
       - id: check-merge-conflict
       - id: check-yaml
@@ -18,7 +18,7 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/pre-commit/mirrors-isort
-    rev: v5.9.1
+    rev: v5.10.1
     hooks:
       - id: isort
         exclude: '^setup\.py$'
