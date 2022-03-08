@@ -28,7 +28,24 @@ jobs:
             pre-commit
           echo "PATH=${HOME}/.local/bin:${PATH}" >> "${GITHUB_ENV}"
 
-      - name: Check for outdated hooks (and fail if any)
+      - name: Check for outdated hooks
         run: |-
           pre-commit autoupdate
-          git diff --exit-code -- .pre-commit-config.yaml
+          git diff -- .pre-commit-config.yaml
+
+      - name: Create pull request from changes (if any)
+        id: create-pull-request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          author: 'pre-commit <pre-commit@tools.invalid>'
+          base: master
+          body: "For your consideration :smiley:"
+          branch: precommit-autoupdate
+          commit-message: "pre-commit: Autoupdate"
+          delete-branch: true
+          labels: enhancement
+          title: "pre-commit: Autoupdate"
+
+      - name: Log pull request URL
+        run: |
+          echo "Pull Request URL is: ${{ steps.create-pull-request.outputs.pull-request-url }}"
