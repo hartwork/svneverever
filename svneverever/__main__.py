@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 # Copyright (C) 2010-2021 Sebastian Pipping <sebastian@pipping.org>
 # Copyright (C) 2011      Wouter Haffmans <wouter@boxplosive.nl>
 # Copyright (C) 2019      Kevin Lane <kevin.lane84@outlook.com>
 # Licensed under GPL v3 or later
 #
-from __future__ import print_function
 
 import argparse
 import getpass
@@ -66,13 +64,6 @@ def _get_terminal_size_or_default():
     return _OsTerminalSize(columns=80, lines=24)
 
 
-def _for_print(text):
-    if sys.version_info >= (3, ):
-        return text
-
-    return text.encode(sys.stdout.encoding or 'UTF-8', 'replace')
-
-
 def dump_tree(t, revision_digits, latest_revision, config,
               level=0, branch_level=-3, tag_level=-3, parent_dir=''):
     def indent_print(line_start, text):
@@ -81,9 +72,9 @@ def dump_tree(t, revision_digits, latest_revision, config,
         else:
             level_text = ' '*(4*level)
         if config.show_numbers:
-            print('{}  {}{}'.format(line_start, level_text, _for_print(text)))
+            print(f'{line_start}  {level_text}{text}')
         else:
-            print('{}{}'.format(level_text, _for_print(text)))
+            print(f'{level_text}{text}')
 
     items = ((k, v) for k, v in t.items() if k)
 
@@ -116,7 +107,7 @@ def dump_tree(t, revision_digits, latest_revision, config,
             tl = level
         dump_tree(children, revision_digits, latest_revision, config,
                   level=level + 1, branch_level=bl, tag_level=tl,
-                  parent_dir='{}/{}'.format(parent_dir, k))
+                  parent_dir=f'{parent_dir}/{k}')
 
 
 def dump_nick_stats(nick_stats, revision_digits, config):
@@ -127,11 +118,11 @@ def dump_nick_stats(nick_stats, revision_digits, config):
         for nick, (first_commit_rev, last_commit_rev, commit_count) \
                 in sorted(nick_stats.items()):
             print(format % (commit_count, first_commit_rev, last_commit_rev,
-                            _for_print(nick)))
+                            nick))
     else:
         for nick, (first_commit_rev, last_commit_rev, commit_count) \
                 in sorted(nick_stats.items()):
-            print(_for_print(nick))
+            print(nick)
 
 
 def ensure_uri(text):
@@ -258,7 +249,7 @@ def _login(realm, username, may_save, _tries):
 
     try:
         if username:
-            print('Username: {}  (as requested by SVN)'.format(username),
+            print(f'Username: {username}  (as requested by SVN)',
                   file=sys.stderr)
         else:
             print('Username: ', end='', file=sys.stderr)
