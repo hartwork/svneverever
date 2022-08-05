@@ -139,7 +139,7 @@ def ensure_uri(text):
 def digit_count(n):
     if n == 0:
         return 1
-    assert(n > 0)
+    assert n > 0
     return int(math.floor(math.log10(n)) + 1)
 
 
@@ -154,9 +154,9 @@ def hms(seconds):
 
 def make_progress_bar(percent, width, seconds_taken, seconds_expected):
     other_len = (6 + 1) + 2 + (1 + 8 + 1 + 9 + 1) + 3 + 1
-    assert(width > 0)
+    assert width > 0
     bar_content_len = width - other_len
-    assert(bar_content_len >= 0)
+    assert bar_content_len >= 0
     fill_len = int(percent * bar_content_len / 100)
     open_len = bar_content_len - fill_len
     seconds_remaining = seconds_expected - seconds_taken
