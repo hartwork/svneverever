@@ -1,3 +1,6 @@
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit)](https://github.com/pre-commit/pre-commit)
+
+
 # About
 **svneverever** helps you inspect the structure of a SVN repository and the changes made to it over time. Its most common use is in combination with [svn-all-fast-export](https://github.com/svn-all-fast-export/svn2git) (or "KDE's svn2git" if you wish).
 
