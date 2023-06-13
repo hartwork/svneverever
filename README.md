@@ -42,9 +42,25 @@ Install with pip as user to avoid messes with Python system files.
 # Usage
 **svneverever** needs the "server-side" of the repository with full history. There are two ways to obtain this. Let's take the SVN history of [headphone effect library bs2b](http://bs2b.sourceforge.net/) as an example.
 
-The first way is to directly point **svneverever** to the server `svneverever svn://svn.code.sf.net/p/bs2b/code/`. However this is slow and it puts a lot of stress on the server.
+The first way is to directly point **svneverever** to the server `svneverever svn://svn.code.sf.net/p/bs2b/code/`. However this is slow and it puts a lot of stress on the server, and will be little fun to run multiple times.
 
-The second, and recommended, method is first downloading the history with **rsvndump**. For this method we first need to use `svnadmin` to create an empty repository and then load the output of **rsvndump** into it. This can be done in the following way:
+The second and recommended method is first downloading the history with
+`svnrdump dump` (that comes with Subversion >=1.7) or [`rsvndump`](https://github.com/jgehring/rsvndump) (with a slightly [different feature set](https://rsvndump.sourceforge.io/) and supporting older versions of Subversion).
+For this method we first need to use `svnadmin` to create an empty repository and then load the output of svnrdump/rsvndump into it. This can be done in the following way:
+
+## With `svnrdump dump`
+
+```console
+# svnadmin create bs2b_svn_store
+
+# time sh -c 'svnrdump dump svn://svn.code.sf.net/p/bs2b/code/ | svnadmin load bs2b_svn_store/'
+[..]
+real    0m3.008s
+user    0m0.309s
+sys     0m0.235s
+```
+
+## With `rsvndump`
 
 ```console
 # svnadmin create bs2b_svn_store
