@@ -49,7 +49,7 @@ The second, and recommended, method is first downloading the history with **rsvn
 ```console
 # svnadmin create bs2b_svn_store
 
-# time sh -c 'rsvndump svn://svn.code.sf.net/p/bs2b/code/ | svnadmin load bs2b_svn_store/'
+# time sh -c 'svnrdump dump svn://svn.code.sf.net/p/bs2b/code/ | svnadmin load bs2b_svn_store/' #if there's a problem try options --trust-server-cert-failures=unknown-ca --non-interactive
 [..]
 real    2m54.403s
 user    0m1.003s
