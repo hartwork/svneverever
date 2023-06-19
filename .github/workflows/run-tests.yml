@@ -1,0 +1,45 @@
+# Copyright (c) 2023 Sebastian Pipping <sebastian@pipping.org>
+# Licensed under GNU General Public License version 3.0 or later
+
+name: Run tests
+
+# Drop permissions to minimum for security
+permissions:
+  contents: read
+
+on:
+  pull_request:
+  push:
+  schedule:
+    - cron: '0 16 * * 5'  # Every Friday 4pm
+  workflow_dispatch:
+
+jobs:
+  run_tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9  # v3.5.3
+
+      - name: Install runtime dependencies
+        run: |-
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends -V \
+              python3-svn
+
+      - name: Install svneverever
+        run: |-
+          pip3 install \
+            --disable-pip-version-check \
+            --user \
+            --no-warn-script-location \
+            -e \
+            .
+          echo "PATH=${HOME}/.local/bin:${PATH}" >> "${GITHUB_ENV}"
+
+      - name: Smoke test
+        run: |-
+          set -x
+          svnadmin create bs2b_svn_store
+          time sh -c 'svnrdump dump svn://svn.code.sf.net/p/bs2b/code/ | svnadmin load bs2b_svn_store/'
+          svneverever bs2b_svn_store/
