@@ -358,13 +358,23 @@ def main():
                 indicate_progress(rev)
             continue
 
-        summary = client.diff_summarize(
-            args.repo_uri,
-            revision1=pysvn.Revision(pysvn.opt_revision_kind.number, rev - 1),
-            url_or_path2=args.repo_uri,
-            revision2=pysvn.Revision(pysvn.opt_revision_kind.number, rev),
-            recurse=True,
-            ignore_ancestry=True)
+        try:
+            summary = client.diff_summarize(
+                args.repo_uri,
+                revision1=pysvn.Revision(pysvn.opt_revision_kind.number,
+                                         rev - 1),
+                url_or_path2=args.repo_uri,
+                revision2=pysvn.Revision(pysvn.opt_revision_kind.number,
+                                         rev),
+                recurse=True,
+                ignore_ancestry=True)
+        except pysvn.ClientError as e:
+            if not (rev == 1 and 'not found in the repository' in str(e)):
+                raise
+            print('ERROR: Path does not exist in the repository at revision 1'
+                  '. Please use svneverever with the root of the repository.',
+                  file=sys.stderr)
+            sys.exit(1)
 
         def is_directory_addition(summary_entry):
             return (summary_entry.summarize_kind
