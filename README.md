@@ -72,7 +72,7 @@ user    0m1.003s
 sys     0m1.300s
 ```
 
-The output can now be obtained by pointing **svneverver** to the svn store directory `bs2b_svn_store`.
+The output can now be obtained by pointing **svneverever** to the svn store directory `bs2b_svn_store`.
 
 ```console
 # svneverever --no-progress bs2b_svn_store/
