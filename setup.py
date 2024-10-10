@@ -24,7 +24,7 @@ setup(
             'svneverever = svneverever.__main__:main',
         ],
     },
-    python_requires='>=3.8',
+    python_requires='>=3.9',
     setup_requires=[
         'setuptools>=38.6.0',  # for long_description_content_type
     ],
@@ -42,7 +42,11 @@ setup(
         'Natural Language :: English',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
+        'Programming Language :: Python :: 3.13',
         'Programming Language :: Python :: 3 :: Only',
         'Topic :: Software Development :: Version Control',
         'Topic :: Utilities',
