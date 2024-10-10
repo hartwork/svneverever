@@ -8,7 +8,7 @@
 # Installation
 
 ## Dependencies
-**svneverever** requires Python 3.8 or higher
+**svneverever** requires Python 3.9 or higher
 and [PySVN](https://pysvn.sourceforge.io/)
 (the one on SourceForge, not the one on PyPI).
 If you want to install **svneverever** with **pip** you need a few additional packages.
