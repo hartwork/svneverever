@@ -19,7 +19,7 @@ repos:
       - id: trailing-whitespace
 
   - repo: https://github.com/pycqa/isort
-    rev: 6.0.1
+    rev: 6.1.0
     hooks:
       - id: isort
         exclude: '^setup\.py$'
